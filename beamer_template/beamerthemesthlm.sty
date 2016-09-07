@@ -77,7 +77,7 @@
 \ProcessOptionsBeamer
 \mode<presentation>
 
-\setbeamersize{text margin left = 2em, text margin right = 2em}
+\setbeamersize{text margin left = 1em, text margin right = 1em}
 
 
 %-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -329,10 +329,10 @@ xrightmargin=-1em
     \progressbar@tmpcounta=\insertframenumber
     \progressbar@tmpcountb=\inserttotalframenumber
     \progressbar@tmpdim=\progressbar@pbwd
-    \divide\progressbar@tmpdim by 1000
+    \divide\progressbar@tmpdim by 10000
     \multiply\progressbar@tmpdim by \progressbar@tmpcounta
     \divide\progressbar@tmpdim by \progressbar@tmpcountb
-    \multiply\progressbar@tmpdim by 1000
+    \multiply\progressbar@tmpdim by 10000
     \fontsize{1em}{1em}\selectfont
 
     \makebox[\textwidth][c]{
@@ -356,10 +356,10 @@ xrightmargin=-1em
   \progressbar@tmpcounta=\insertframenumber
   \progressbar@tmpcountb=\inserttotalframenumber
   \progressbar@tmpdim=\paperwidth
-  \divide\progressbar@tmpdim by 1000
+  \divide\progressbar@tmpdim by 1000 
   \multiply\progressbar@tmpdim by \progressbar@tmpcounta
   \divide\progressbar@tmpdim by \progressbar@tmpcountb
-  \multiply\progressbar@tmpdim by 1000
+  \multiply\progressbar@tmpdim by 1000 
   {%
     \usebeamercolor{palette quaternary}%
     \begin{tikzpicture}[tight background]
