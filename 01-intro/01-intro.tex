@@ -7,7 +7,8 @@
 
 \documentclass[newPxFont,sthlmFooter,nooffset]{beamer}
 \usepackage{kotex}
-\usetheme{sthlm}
+%\usetheme{sthlm}
+\usepackage{../beamer_template/beamerthemesthlm}
 \hypersetup{pdfauthor={Seongjin Lee (insight@hanyang.ac.kr)},
             pdfsubject={Lecture Note: System Programming},
             pdfkeywords={Lecture Note, System Programming, class, undergraduate},
@@ -389,7 +390,6 @@ void perror(const char *msg)
 %---------------------------------------------------------
 \section{The Editors}
 \subsection{Vim}
-
 \begin{frame}[t]{}
 \begin{figure}\centering
   \includegraphicscopyright[width=\linewidth]
@@ -584,10 +584,12 @@ E \keystroke{l}~ \keystroke{r}~ N \keystroke{l}~ \keystroke{r}~ D \keystroke{:}~
 This will produce following and goes back to command prompt
 
 \begin{beamercolorbox}[wd=\linewidth]{boxsthlmLightPurple}
-\begin{sthlmLatex}This is how we write 
+\begin{sthlmLatex}
+This is how we write
 and copy lines
 This is how we write and copy lines
-END\end{sthlmLatex}
+END
+\end{sthlmLatex}
 \end{beamercolorbox}
 
 \end{frame}
@@ -841,10 +843,12 @@ This is how we write \hfill ~~~~~~ \keystroke{Ctrl}-\keystroke{qj} \hfill~~~~~~ 
 This will produce following and goes back to command prompt
 
 \begin{beamercolorbox}[wd=\linewidth]{boxsthlmLightPurple}
-\begin{sthlmLatex}This is how we write 
+\begin{sthlmLatex}
+This is how we write 
 and copy lines
 This is how we write and copy lines
-END\end{sthlmLatex}
+END
+\end{sthlmLatex}
 \end{beamercolorbox}
 
 \end{frame}
