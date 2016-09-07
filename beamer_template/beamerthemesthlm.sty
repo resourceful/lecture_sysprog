@@ -62,6 +62,11 @@
 \@doSectionPagetrue
 \DeclareOptionBeamer{nosectionpage}{\@doSectionPagefalse}
 
+\newif\if@doSubsectionPage
+\@doSubsectionPagetrue
+\DeclareOptionBeamer{nosubsectionpage}{\@doSubsectionPagefalse}
+
+
 \DeclareOptionBeamer{nooffset}{\setlength{\@sthlm@voffset}{0em}}
 
 \DeclareOptionBeamer*{%
@@ -74,8 +79,7 @@
 \ProcessOptionsBeamer
 \mode<presentation>
 
-
-\setbeamersize{text margin left = 1em, text margin right = 1em}
+\setbeamersize{text margin left = 2em, text margin right = 2em}
 
 
 %-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -223,8 +227,10 @@ xrightmargin=-1em
 %	03. COLOR AND FONT THEMES (BEAMER)
 %-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-\usecolortheme{sthlm}
-\usefonttheme{sthlm}
+%\usecolortheme{sthlm}
+%\usefonttheme{sthlm}
+\usepackage{../beamer_template/beamercolorthemesthlm}
+\usepackage{../beamer_template/beamerfontthemesthlm}
 
 %-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 %	04. TITLE PAGE
@@ -259,7 +265,7 @@ xrightmargin=-1em
     {\usebeamerfont{date}\usebeamercolor[fg]{date}Updated: \insertdate\par\small{\jobname}\par}%
     \fi%
     \vfill
-    \hfill\includegraphics[height=2cm]{pictures/foxed.png} \hspace{5mm} \par % \includegraphics[height=10mm]{issr} \par
+    \hfill\includegraphics[height=2cm]{./pictures/foxed.png} \hspace{5mm} \par % \includegraphics[height=10mm]{issr} \par
     \vspace{-6em}
     \ifx\insertinstitut\@empty%
     \else%
@@ -292,7 +298,7 @@ xrightmargin=-1em
 \progressbar@pbwd=20em
 \progressbar@pbht=2pt
 
-% the progress bar
+% the section progress bar
 \def\progressbar@sectionprogressbar{%
   {\usebeamercolor{palette quaternary}%
     \progressbar@tmpcounta=\insertframenumber
@@ -318,6 +324,34 @@ xrightmargin=-1em
     }
   }
 }
+
+% the subsection progress bar
+\def\progressbar@subsectionprogressbar{%
+  {\usebeamercolor{palette quaternary}%
+    \progressbar@tmpcounta=\insertframenumber
+    \progressbar@tmpcountb=\inserttotalframenumber
+    \progressbar@tmpdim=\progressbar@pbwd
+    \divide\progressbar@tmpdim by 1000
+    \multiply\progressbar@tmpdim by \progressbar@tmpcounta
+    \divide\progressbar@tmpdim by \progressbar@tmpcountb
+    \multiply\progressbar@tmpdim by 1000
+    \fontsize{1em}{1em}\selectfont
+
+    \makebox[\textwidth][c]{
+      \begin{tikzpicture}[tight background]
+
+        \node[anchor=south west, fg, inner sep=0pt, text width=\progressbar@pbwd] at (0pt, 0pt) {\insertsectionHEAD : \insertsubsectionHEAD};
+
+        \draw[anchor=west, fg, fill=fg, inner sep=0pt]
+        (0, -1ex) rectangle ++ (\progressbar@pbwd, \progressbar@pbht);
+
+        \draw[anchor=west, bg, fill=bg, inner sep=0pt]
+        (0, -1ex) rectangle ++ (\progressbar@tmpdim, \progressbar@pbht);
+      \end{tikzpicture}%
+    }
+  }
+}
+
 
 \if@useTitleProgressBar
 \def\progressbar@titleprogressbar{%
@@ -360,6 +394,30 @@ xrightmargin=-1em
 \else
 \fi
 
+
+% subsection 
+\if@doSubsectionPage
+\newcommand{\insertsubsectionHEAD}{%
+  \expandafter\insertsubsectionHEADaux\insertsubsectionhead}
+  \newcommand{\insertsubsectionHEADaux}[3]{\textsc{#3}
+}
+
+\AtBeginSubsection[]
+{
+  \begingroup
+  \setbeamercolor{background canvas}{parent=palette primary}
+  \begin{frame}[plain]
+    \vspace{2em}\usebeamerfont{section title}
+    \progressbar@subsectionprogressbar%
+  \end{frame}
+  \endgroup
+}
+\else
+\fi
+
+
+
+
 %-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 %	08. ITEMIZE
 %-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -377,7 +435,7 @@ xrightmargin=-1em
 \setbeamertemplate{footline}{
 \hbox{
 \begin{beamercolorbox}[wd=0.10\textwidth,dp=1.5ex,leftskip=0.2cm,rightskip=0cm]{structure}
-\reflectbox{\includegraphics[width=0.1\textwidth]{pictures/foxed.png}}
+\reflectbox{\includegraphics[width=0.1\textwidth]{./pictures/foxed.png}}
 \end{beamercolorbox}
 \begin{beamercolorbox}[wd=0.90\textwidth, dp=1.5ex,leftskip=0.3cm,rightskip=0.5cm plus1fil]{structure}
 \usebeamerfont{page number in head/foot}
