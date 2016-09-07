@@ -1,0 +1,48 @@
+% Author: Seongjin Lee 
+% Hanyang University, Seoul, Korea 
+% esos.hanyang.ac.kr 
+% 2016-09-01
+% note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
+% https://github.com/resourceful/lecture_sysprog/
+
+\documentclass{article}
+\usepackage{kotex}
+\usepackage{hyperref}
+\hypersetup{pdfauthor={Seongjin Lee (insight@hanyang.ac.kr)},
+            pdfsubject={Editor Skill Test},
+            pdfkeywords={vi, emacs, editor, skill test},
+            pdfcreator={Seongjin Lee},
+            hidelinks}
+
+
+
+
+\title{Vi and Emacs Skill Test}
+\author{Seongjin Lee}
+\date{2016-09-07} 
+
+\begin{document}
+\maketitle 
+
+\noindent
+\fbox{
+\parbox{\textwidth}{vi 또는 emacs를 이용하여 “blkparse.txt”를 연 뒤, 다음 지시사항들을 따라 하시기 바랍 니다. 동일한 경로에 “blktrace.txt”도 함께 위치시키시기 바랍니다.}
+}
+
+\begin{enumerate}
+\item 51번째 line으로 커서를 이동하시오.
+\item ``blktrace'' 문자열을 아래 방향으로 한 번 검색하여 커서를 이동하시오.
+\item 현재커서위치에서한line을복사한뒤, 복사한문자열을현재커서위치의다음 line으로 삽입하시오.
+\item 현재 커서 위치에서 위 방향으로 ``blkparse'' 문자열을 검색하여 5번 커서를 이동하시 오. 도착한 커서 위치의 line 한 줄을 지우시오.
+\item 24~29 line 6줄을 복사한 뒤, 31번 line 시작 위치에 붙여 넣으시오.
+\item 38번째 line으로 커서를 이동한 뒤, 일곱 줄을 지우시오.
+\item 해당 파일의 첫 행으로 커서를 옮긴 뒤, 현재 커서 위치부터 나오는 ``blkparse'' 문자 열 10개를 ``blocktrace\_parser''로 치환하시오.
+\item ``blktrace.txt'' 파일의 본문을, 현재 파일의 444번 Line 시작 위치에 삽입하시오.
+\item 해당 파일의 첫 행으로 커서를 옮긴 뒤, 다음과 같이 매크로를 작성하고 수행하시오.
+\begin{enumerate}
+\item btrace 문자열 검색 $\rightarrow$ line 끝으로 이동$\rightarrow$ btrace is here 입력
+\item 작성한 매크로를 7번 반복하시오.
+\end{enumerate}
+\item 현재까지 변경된 문서를 ``이름\_본인학번.txt''로 저장한 뒤, \href{mailto:insight@hanyang.ac.kr}{insight@hanyang.ac.kr}로 보내시요. (Ex. result\_2011234567.txt)
+\end{enumerate}
+\end{document}
