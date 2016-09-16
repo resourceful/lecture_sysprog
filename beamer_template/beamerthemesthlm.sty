@@ -14,18 +14,18 @@
 %					<https://github.com/hsrmbeamertheme/hsrmbeamertheme>.
 %
 %	Contents	::	01. PACKAGE OPTIONS & SETUP
-%					02. PACKAGES & TIKZ
-%					03. COLOR AND FONT THEMES (BEAMER)
-%					04. TITLE PAGE
-%					05. TABLE OF CONTENTS
-%					06. PROGRESS BAR & HEADLINE
-%					07. SECTION PAGES
-%					08. ITEMIZE
-%					09. FOOTLINE
-%					10. CAPTIONS
-%					11. FRAME TITLE
-%					12. IMAGES
-%					13. BLOCKS
+%				02. PACKAGES & TIKZ
+%				03. COLOR AND FONT THEMES (BEAMER)
+%				04. TITLE PAGE
+%				05. TABLE OF CONTENTS
+%				06. PROGRESS BAR & HEADLINE
+%				07. SECTION PAGES
+%				08. ITEMIZE
+%				09. FOOTLINE
+%				10. CAPTIONS
+%				11. FRAME TITLE
+%				12. IMAGES
+%				13. BLOCKS
 
 %-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 %	01. PACKAGE OPTIONS & SETUP
@@ -166,6 +166,27 @@ xrightmargin=0.5em
 }}
 {}
 
+\lstnewenvironment{codedef}
+{\lstset{
+language=[LaTeX]TeX,
+basicstyle=\ttfamily\fontsize{8pt}{9pt}\selectfont,
+keywordstyle=,
+numbers=none,
+stepnumber=1,
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+breaklines=true,
+frame=single,
+%framerule=0.5pt,
+tabsize=3,
+framexleftmargin=1em,
+framexrightmargin=0.5em,
+xleftmargin=1em,
+xrightmargin=8pt,
+% columns=fullflexible
+}}
+{}
 
 %-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 %	GLOBAL MATH
@@ -219,7 +240,8 @@ tabsize=3,
 framexleftmargin=1em,
 framexrightmargin=0.5em,
 xleftmargin=1em,
-xrightmargin=-1em
+xrightmargin=-1em,
+columns=fullflexible
 }
 
 %-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
