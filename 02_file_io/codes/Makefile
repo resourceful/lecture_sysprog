@@ -19,13 +19,11 @@ iotest: mycat.c testfiles
 		echo "BUFFSIZE = $$NUM"; \
 		cc -Wall -DBUFFSIZE=$$NUM -o $@ $< ; \
 		i=$$(( $$i + 1 )) ; \
-		time -p ./$@ < testfiles/file$$i > testfiles/file$$i.copy; \
+		time -p ./$@ < testfiles/temp_file > testfiles/file$$i.copy; \
 		echo; \
 	done;
 
 testfiles: 
-	mkdir -p testfiles
-	for cnt in `seq 1 10`; do \
-		dd if=/dev/urandom of=testfiles/file$$cnt count=104800;  \
-	done;
+	mkdir -p testfile
+	dd if=/dev/urandom of=testfiles/temp_file count=104800;  \
 
