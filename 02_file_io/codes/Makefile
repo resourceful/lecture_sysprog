@@ -1,5 +1,5 @@
 
-PROGRAMS = fdcount hole mycat 
+PROGRAMS = fdcount hole mycat setfl
 
 CFLAGS = -g -Wall -O0
 
@@ -12,7 +12,7 @@ ${PROGRAMS}: %: %.o
 	${CC} ${CFLAGS} -o $@ $< 
 
 clean:
-	rm -r ${PROGRAMS} *.o iotest testfiles
+	rm -r ${PROGRAMS} *.o iotest testfiles ftest
 
 iotest: mycat.c testfiles 
 	for NUM in 1 64 256 512 2048 4096 16384 32768 65536 81920; do \
@@ -24,6 +24,14 @@ iotest: mycat.c testfiles
 	done;
 
 testfiles: 
-	mkdir -p testfile
+	mkdir -p testfiles
 	dd if=/dev/urandom of=testfiles/temp_file count=104800;  \
+
+ftest: setfl.c testfiles
+	for FLAGS in a b c d; do \
+		echo "FLAGS = $$FLAGS"; \
+		cc -Wall -o $@ $< ; \
+		time -p ./$@ -$$FLAGS < testfiles/temp_file > testfiles/file_$$FLAGS; \
+		echo ; \
+	done;
 
