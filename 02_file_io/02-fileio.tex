@@ -59,7 +59,7 @@ How to compile \\
 \end{frame}
 
 
-\subsection{Standard I/O}
+\subsection{Standard I/Os}
 \begin{frame}[t]{Basic File I/Os}
 There are five fundamental \textsc{Unix} file I/O related functions: 
 \begin{itemize}
@@ -267,7 +267,7 @@ If the \texttt{O\_APPEND} option was specified when the file was opened, the fil
 After a successful write, the file’s offset is incremented by the number of bytes actually written.
 \end{frame}
 
-
+\subsection{I/O Efficiency}
 \begin{frame}[containsverbatim,t]
   \frametitle{I/O Efficiency}
 \lstinputlisting[lineskip=-5pt]{./codes/mycat.c}
@@ -432,6 +432,8 @@ ssize_t pwrite(int fd, const void *buf, size_t nbytes, off_t offset);
 \end{codedef}
 \end{frame}
 
+
+\subsection{Descriptors}
 \begin{frame}[containsverbatim,t]
   \frametitle{dup and dup2 Functions}
 
@@ -488,6 +490,7 @@ void sync(void);
 
 \end{frame}
 
+\subsection{Manipulating Open Flags}
 \begin{frame}[containsverbatim,t]
   \frametitle{fcntl Function}
 \texttt{fcntl} function can change the properties of a file that is already open
@@ -514,10 +517,65 @@ The purposes
 \texttt{cd codes; make setfl} or \texttt{make ftest}
 \lstinputlisting[linerange={65-68,71-71,74-83},lineskip=-5pt]{./codes/setfl.c}
 
-the Makefile
+Use the Makefile and check the performance shown in Fig 3.14
 \lstinputlisting[linerange={30-36},lineskip=-5pt]{./codes/Makefile}
 
 \end{frame}
 
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{ioctl Function}
+The catchall for I/O operations.
+
+\begin{codedef}
+#include <unistd.h>     /* System V */
+#include <sys/ioctl.h>  /* BSD, OSX, and Linux */
+int ioctl(int fd, int request, ...);
+// Returns: −1 on error, something else if OK
+\end{codedef}
+\bigskip
+
+It is designed to handle devices, such as terminal I/O, mag tape, etc, that can't be specified by previous calls.
+\end{frame}
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{/dev/fd}
+Newer systems provide a directory named \texttt{/dev/fd} whose entries are files named 0, 1, 2, and so on.
+
+Opening the file \texttt{/dev/fd/}\textit{n} is equivalent to duplicating descriptor \textit{n}, assuming that descriptor \textit{n} is open
+\bigskip
+
+\begin{codedef}
+> ls -l /dev/sdtin /dev/stdout /dev/stderr
+
+> ls -l /dev/fd/
+
+> echo first > file1
+> echo third > file2
+> echo second | paste file1 /dev/fd/0 file2
+\end{codedef}
+
+\end{frame}
+
+\section{Last Words}
+\begin{frame}[containsverbatim,t]
+  \frametitle{Homework}
+  \begin{itemize}
+  \item Reading
+    \begin{enumerate}[ ]
+    \item 
+      \begin{sthlmLatex}
+man { open | creat | lseek | read | pread | write | pwrite | close | dup | dup2 | fcntl | sync | fsync | fdatasync | ioctl }
+      \end{sthlmLatex}
+
+    \item Chapter 4
+    \end{enumerate}
+  \item Solve
+    \begin{itemize}
+    \item Question 3.4 and 3.5
+    \end{itemize}
+  \end{itemize}
+\end{frame}
 
 \end{document}
