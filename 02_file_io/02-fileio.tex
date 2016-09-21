@@ -354,7 +354,7 @@ The kernel uses three data structures to represent an open file, and the relatio
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[t]
   \frametitle{on v-node}
 \begin{itemize}
 \item The v-node was invented to provide support for multiple file system types on a computer.
@@ -400,12 +400,12 @@ if (write(fd, buf, 100) != 100){   /* and write */
     exit(1);
 }
 
+\end{lstlisting}
 \bigskip
 It worked for single process 
 
 \bigskip
 Read p.78 for more info
-\end{lstlisting}
 \end{frame}
 
 \begin{frame}[containsverbatim,t]
@@ -469,7 +469,10 @@ There is a page cache in the kernel through which most disk I/O passes.
 \item When writing a data to a file, it is copied to the buffer and queued for writing to disk at some later time
 \item data in buffer are written to the disk explicitly using following functions
 \end{itemize}
+\end{frame}
 
+\begin{frame}[containsverbatim,t]
+  \frametitle{sync, fsync, and fdatasync Functions}
 \begin{codedef}
 #include <unistd.h> 
 int fsync(int fd); 
