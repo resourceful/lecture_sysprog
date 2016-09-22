@@ -92,9 +92,67 @@ struct stat {
 };		
 \end{codedef}
 
-Note taht most members of the \texttt{stat} structure are specified by a \textit{primitive system data type} (see Section 2.8, header \texttt{<sys/types.h>})
+Note that most members of the \texttt{stat} structure are specified by a \textit{primitive system data type} (see Section 2.8, header \texttt{<sys/types.h>})
 \end{frame}
 
+\begin{frame}[t]
+  \frametitle{File Types}
+Everything is a file in \textsc{Unix}. There are .... 
+\begin{itemize}
+\item Regular file: {\footnotesize The most common type, and there is
+    no disctiction whether the data is text or binary. Application is
+    responsible for interpreting}
+\item Directory file: {\footnotesize A file that contains the name of
+    other files and pointers to information on these files. Any
+    process can read, only kernel can write.}
+\item Block sepcial file: {\footnotesize A type of file providing
+    buffered I/O access in fixed-size units to devices such as disk
+    drives}
+\item Character special file: {\footnotesize A type of file providing
+    unbuffered I/O access in variable-sized units to devices}
+\item FIFO: {\footnotesize A Type of file used for communication
+    between processes}
+\item Socket: {\footnotesize A type of file used for network
+    communication between processes}
+\item Symbolic Link: {\footnotesize A type of file that points to another file}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]
+  \frametitle{File Types Cnt'd}
+The type of a file is encoded in the \texttt{st\_mode} member of the \texttt{stat} structure
+
+\begin{center}
+  \begin{tabular}[t]{c | c}
+  \caption{File type macros in \texttt{<sys/stat.h>}}
+    Macro & Type of file \\ \hline
+    \texttt{S\_ISREG()}	&	regular file	\\  \hline
+    \texttt{S\_ISDIR()}	&	directory file	\\  \hline
+    \texttt{S\_ISCHR()}	&	character special file	\\  \hline
+    \texttt{S\_ISBLK()}	&	block special file	\\  \hline
+    \texttt{S\_ISFIFO()}	&	pipe or FIFO	\\  \hline
+    \texttt{S\_ISLNK()}	&	symbolic link	\\  \hline
+    \texttt{S\_ISSOCK()}	&	socket 	\\  
+  \end{tabular}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{File Types Cnt'd}
+First, let's review \texttt{./codes/myls.c}
+  \lstinputlisting[linerange={17,33},lineskip=-5pt]{./codes/myls.c}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Let's improve the code (myls.c, Fig. 4.3)}
+The code at the moment does not show file types. 
+
+Make changes to the code such that it prints out the file types. 
+
+Use Fig. 4.3 as reference.
+  
+\end{frame}
 
 \section{Attributes}
 
