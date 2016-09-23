@@ -19,6 +19,7 @@
 %    \parbox{\linewidth}{\vspace*{-8pt} \insertsectionhead  \hfill\insertshortauthor\hfill\insertpagenumber}}
 %\setbeamertemplate{navigation symbols}{}
 
+\newcommand\Fontvi{\fontsize{10}{11}\selectfont}
 
 
 \title{System Programming}
@@ -118,13 +119,21 @@ Everything is a file in \textsc{Unix}. There are ....
 \end{itemize}
 \end{frame}
 
-\begin{frame}[t]
+\begin{frame}[containsverbatim,t]
   \frametitle{File Types Cnt'd}
 The type of a file is encoded in the \texttt{st\_mode} member of the \texttt{stat} structure
 
+\begin{codedef}
+struct stat st; 
+if (S_ISREG(st.st_mode));
+    printf("Regular File\n");
+\end{codedef}
+
+
 \begin{center}
-  \begin{tabular}[t]{c | c}
-  \caption{File type macros in \texttt{<sys/stat.h>}}
+  \begin{table}
+    \centering
+    \begin{tabular}[t]{c | c}
     Macro & Type of file \\ \hline
     \texttt{S\_ISREG()}	&	regular file	\\  \hline
     \texttt{S\_ISDIR()}	&	directory file	\\  \hline
@@ -134,6 +143,9 @@ The type of a file is encoded in the \texttt{st\_mode} member of the \texttt{sta
     \texttt{S\_ISLNK()}	&	symbolic link	\\  \hline
     \texttt{S\_ISSOCK()}	&	socket 	\\  
   \end{tabular}
+  \caption{File type macros in \texttt{<sys/stat.h>}}
+\end{table}
+
 \end{center}
 
 \end{frame}
@@ -144,7 +156,7 @@ First, let's review \texttt{./codes/myls.c}
   \lstinputlisting[linerange={17,33},lineskip=-5pt]{./codes/myls.c}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[t]
   \frametitle{Let's improve the code (myls.c, Fig. 4.3)}
 The code at the moment does not show file types. 
 
@@ -155,6 +167,141 @@ Use Fig. 4.3 as reference.
 \end{frame}
 
 \section{Attributes}
+
+\begin{frame}
+  \frametitle{Set-User-ID and Set-Group-ID}
+Every process has six or more IDs associated with it
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{l | l}
+     real user ID & \multirow{2}{*}{who we really are} \\ 
+     real group ID & \\ \hline
+     effective group ID & \multirow{3}{*}{used for file accessed permission checks} \\ 
+     effective group ID & \\ 
+     supplimentary group IDs & \\ \hline
+     saved set-user-ID & \multirow{2}{*}{saved by exec function} \\
+     saved set-group-ID & \\
+    \end{tabular}
+    \caption{User IDs and group IDs associated with each process}
+    \label{tab:uid_gid}
+  \end{table}
+Every file has an owner and a group owner. The owner is specified by the \texttt{st\_uid} member of the stat structure; the group owner, by the \texttt{st\_gid} member.
+\end{frame}
+
+
+\begin{frame}[t]
+  \frametitle{File Access Permissions}
+\Fontvi
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+      \begin{table}[h]
+        \centering
+        \begin{tabular}{l | l}
+          st\_mode mask & Meaning \\ \hline
+          S\_IRUSR & user-read   \\
+          S\_IWUSR & user-write  \\
+          S\_IXUS  & user-excute \\ \hline
+          S\_IRGRP & group-read   \\
+          S\_IWGRP & group-write  \\
+          S\_IXGRP & group-excute \\ \hline
+          S\_IROTH & other-read   \\
+          S\_IWOTH & other-write  \\
+          S\_IXOTH & other-excute \\ 
+        \end{tabular}
+        \caption{The nine file access permission bits from <sys/stat.h>}
+        \end{table}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}
+      \item To open a file, need execute permission on each directory
+        component of the path
+      \item To open a file with \texttt{O\_RDONLY} or
+        \texttt{O\_RDWR}, need read permission
+      \item To open a file with \texttt{O\_ WRONLY} or
+        \texttt{O\_RDWR}, need write permission
+      \item To use \texttt{O\_TRUNC}, must have write permission
+      \item To create a new file, must have write+execute permission
+        for the directory
+      \item To delete a file, need write+execute on directory, file
+        doesn’t matter To execute a file (via exec family), need
+        execute permission
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{access and faccessat Function}
+When we open a file, the kernel performs its access tests based on the effective user and group IDs
+
+  \begin{codedef}
+ #include <unistd.h>
+int access(const char *pathname, int mode);
+int faccessat(int fd, const char *pathname, int mode, int flag);
+\\ Both return: 0 if OK, −1 on error
+  \end{codedef}
+\bigskip
+Tests file accessibility on the basis of the {\em real} \texttt{uid} and \texttt{gid}. It is useful when a process is running as someone else, using either the set-user-ID or set-group-ID feature
+
+\begin{center}
+  \begin{tabular}{c | c}
+    \texttt{R\_OK} & test for read permission \\
+    \texttt{W\_OK} & test for write permission \\
+    \texttt{X\_OK} & test for execute permission \\
+    \texttt{F\_OK} & test for existence of file \\
+  \end{tabular}
+\end{center}
+
+\end{frame}
+
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{access Function Example}
+Let's review \texttt{codes/access.c}
+\lstinputlisting[linerange={9,24},lineskip=-5pt]{codes/access.c}
+
+\end{frame}
+
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{access Function Example}
+The steps are as follows
+  \begin{enumerate}[ ]
+  \item cd codes/ ; make access
+  \item \texttt{ls -l access}
+  \item \texttt{ls -l /etc/shadow}
+  \item \texttt{./access /etc/shadow}
+  \item \texttt{su chown root access}
+  \item \texttt{chmod u+s access}
+  \item \texttt{ls -l access}
+  \item \texttt{./access /etc/shadow}
+  \item \texttt{exit}
+  \item \texttt{access /etc/shadow}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Order of Permission Tests}
+Which permission set to use is determined (in order listed):
+\begin{enumerate}
+\item If effective-uid == 0 (the superuser), grant access
+\item If effective-uid == \texttt{st\_uid} (the owner ID)
+   \begin{enumerate}
+   \item if appropriate user permission bit is set, grant access (user
+     permissions are RWX)
+   \item else, deny access
+   \end{enumerate}
+\item If effective-gid == \texttt{st\_gid} (the group ID)
+   \begin{enumerate}
+   \item if appropriate group permission bit is set, grant access
+   \item else, deny access
+   \end{enumerate}
+\item If appropriate other permission bit is set, grant access, else deny access
+\end{enumerate}
+\end{frame}
 
 \section{File System Structures}
 

@@ -1,5 +1,5 @@
 
-PROGRAMS = myls filetype
+PROGRAMS = myls filetype access
 
 CFLAGS = -g -Wall -O0
 
