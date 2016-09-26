@@ -1,5 +1,5 @@
 
-PROGRAMS = myls filetype access myumask mychmod myunlink futimens_ex
+PROGRAMS = myls filetype access myumask mychmod myunlink futimens_ex chdir
 
 CFLAGS = -g -Wall -O0
 

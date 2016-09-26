@@ -31,7 +31,7 @@ main(int argc, char *argv[])
 #ifdef __APPLE__
 		/* futimens and utimensat doesnot work in some osx */
 		/* update to current time */
-		if (futimes( fd, &ubuf.modtime) < 0) 
+		if (utimes( fd, time) < 0) 
 #else
 		if (futimens(fd, time) < 0)		/* reset times */
 #endif
