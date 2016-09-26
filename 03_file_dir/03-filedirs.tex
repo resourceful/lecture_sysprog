@@ -852,7 +852,108 @@ struct timeval {
 
 \section{Directories}
 
+\begin{frame}[containsverbatim,t]
+  \frametitle{mkdir and mkdirat Functions}
+Directories are created with the \texttt{mkdir} and \texttt{mkdirat}
+functions, and deleted with the \texttt{rmdir} function.
 
+\begin{codedef}
+#include <sys/stat.h>
+int mkdir(const char *pathname, mode_t mode);
+int mkdirat(int fd, const char *pathname, mode_t mode);
+// Both return: 0 if OK, −1 on error    
+\end{codedef}
+
+\begin{itemize}
+\item These functions create a new, empty directory with dot and dot-dot
+\item The specified file access permissions, mode, are modified by the file mode creation mask of the process.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{rmdir Function}
+\begin{codedef}
+#include <unistd.h>
+int rmdir(const char *pathname);
+// Returns: 0 if OK, −1 on error
+\end{codedef}
+\bigskip
+
+If a link count of the directory becomes 0 with this call, and if no other process has the directory open, then the space occupied by the directory is freed
+
+\end{frame}
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{Reading Directories}
+Directories can be read by anyone who has access permission to read the directory. But only the kernel can write to a directory, to preserve file system sanity. 
+
+\begin{codedef}
+#include <dirent.h>
+DIR *opendir(const char *pathname); 
+DIR *fdopendir(int fd);
+// Both return: pointer if OK, NULL on error 
+
+struct dirent *readdir(DIR *dp); 
+// Returns: pointer if OK, NULL at end of directory or error
+
+void rewinddir(DIR *dp);
+int closedir(DIR *dp);
+// Returns: 0 if OK, −1 on error 
+\end{codedef}
+
+
+The dirent structure (format of directory) defined in <dirent.h> is implementation dependent.
+
+
+\end{frame}
+
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{Moving Around Directories}
+
+\begin{codedef}
+#include <unistd.h>
+int chdir(const char *pathname); 
+int fchdir(int fd);
+// Both return: 0 if OK, −1 on error
+
+#include <unistd.h>
+char *getcwd(char *buf, size_t size);
+// Returns: buf if OK, NULL on error
+\end{codedef}
+
+The current working directory (CWD) is an attribute of a process
+
+The home directory is an attribute of a login name
+\end{frame}
+
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{Moving Around Directories}
+
+\lstinputlisting[linerange={12,30},lineskip=-5pt]{codes/chdir.c}
+\bigskip
+
+\texttt{cd codes; make chdir; ./chdir /tmp}
+
+
+\end{frame}
+
+\section{Last Words}
+\begin{frame}[t]
+  \frametitle{Homework}
+
+  \begin{itemize}
+  \item Review chapter 4
+  \item Read chapter 5
+  \item Setup ctag, download the kernel containing F2FS, we are going to implement new feature -- more info at \url{http://resourceful.github.io/classes/2016-09-21-announcing-the-project/}
+  \end{itemize}
+\end{frame}
 
 
 \end{document}
