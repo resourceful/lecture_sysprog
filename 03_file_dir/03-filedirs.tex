@@ -63,15 +63,19 @@ int lstat(const char *restrict pathname, struct stat *restrict buf );
 int fstatat(int fd, const char *restrict pathname, struct stat *restrict buf, int flag);
 &&\hfill // All four return: 0 if OK, −1 on error 
 \end{codedef}
+\begin{itemize}
+\item \texttt{stat}: returns a structure of information about the file
+  at \textit{pathname}
 
-\texttt{stat}: returns a structure of information about the file at \textit{pathname}
+\item \texttt{fstat}: obtains information about the file that is already
+  open on the descriptor \texttt{fd}
 
-\texttt{fstat}: obtains information about the file that is already open on the descriptor \texttt{fd}
+\item \texttt{lstat}: returns info about the symbolic link, not the file
+  referenced by the symbolic link
 
-\texttt{lstat}: returns info about the symbolic link, not the file referenced by the symbolic link
-
-\texttt{fstatat} returns the file statistics for a pathname relative to an open directory represented by the \texttt{fd}
-
+\item \texttt{fstatat} returns the file statistics for a pathname relative
+  to an open directory represented by the \texttt{fd}
+\end{itemize}
 \end{frame}
 
 \begin{frame}[containsverbatim,t]
@@ -322,6 +326,7 @@ mode_t umask(mode_t cmask);
 
 \begin{frame}[containsverbatim,t]
   \frametitle{umask Example}
+Let's review \texttt{codes/myumask.c}
 \lstinputlisting[linerange={10,26}, lineskip=-5pt]{./codes/myumask.c}
 \end{frame}
 
@@ -420,6 +425,7 @@ Note that nine of the entries are the nine file access permission bits from Page
 
 \begin{frame}[containsverbatim,t]
   \frametitle{chmod Example}
+Let's review \texttt{codes/mychmod.c}
 \lstinputlisting[linerange={13,31},lineskip=-5pt]{codes/mychmod.c}
 \end{frame}
 
@@ -711,15 +717,18 @@ If oldname refers to \textbf{is a file}, it is renaming a file or a symbolic lin
 
 \begin{frame}[t]
   \frametitle{rename Function - the detail}
+
 \texttt{int rename(const char *oldname, const char *newname);}  
 \bigskip
 
 If oldname refers to \textbf{is a directory}, it is renaming a directory.
 
 \begin{itemize}
-\item if \textit{newname} exists and is an empty directory, it is removed; \textit{oldname} is renamedd \textit{newname}
+\item if \textit{newname} exists and is an empty directory, it is
+  removed; \textit{oldname} is renamedd \textit{newname}
 \item if \textit{newname} exists and is a file, an error is returned
-\item if \textit{oldname} is a prefix of \textit{newname}, an error is returned
+\item if \textit{oldname} is a prefix of \textit{newname}, an error is
+  returned
 \item w+x permission for directory containing \textit{oldname} and
   \textit{newname}
 \end{itemize}
@@ -729,15 +738,19 @@ If oldname refers to \textbf{is a directory}, it is renaming a directory.
 
 \begin{frame}[t]
   \frametitle{rename Function - the detail}
+
 \texttt{int rename(const char *oldname, const char *newname);}  
 \bigskip
 
 Other details
 
 \begin{itemize}
-\item \textbf{\textit{oldname} or \textit{newname} is symbolic link}, then the link itself is processed, not the file to which it resolves
+\item \textbf{\textit{oldname} or \textit{newname} is symbolic link},
+  then the link itself is processed, not the file to which it resolves
 \item We can’t rename dot or dot-dot.
-\item As a special case, if \textit{oldname} and \textit{newname} refer to the same file, the function returns successfully without changing anything.
+\item As a special case, if \textit{oldname} and \textit{newname}
+  refer to the same file, the function returns successfully without
+  changing anything.
 \end{itemize}
 
 \end{frame}
@@ -746,6 +759,7 @@ Other details
 
 \begin{frame}[containsverbatim,t]
   \frametitle{Creating Symbolic Links}
+
 \begin{codedef}
 #include <unistd.h>
 int symlink(const char *actualpath, const char *sympath);
@@ -935,7 +949,7 @@ The home directory is an attribute of a login name
 
 \begin{frame}[containsverbatim,t]
   \frametitle{Moving Around Directories}
-
+Let's review \texttt{codes/chdir.c}
 \lstinputlisting[linerange={12,30},lineskip=-5pt]{codes/chdir.c}
 \bigskip
 
