@@ -1,6 +1,6 @@
 /*
- * simple-ls.c
- * usage ./simple-ls .
+ * myls.c
+ * usage ./myls .
  * Objective - use this file as the basis for printing out various types of the
  * file. For example, whether it is a regular file or a directory file, etc. Hints are : <sys/stat.h> , struct stat sb, and stat() S_ISXXX();
  */
