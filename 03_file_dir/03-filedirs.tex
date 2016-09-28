@@ -628,7 +628,7 @@ int unlinkat(int fd, const char *pathname, int flag);
 \item If there are other links to the file, the data in the file is still accessible through the other links
 \item To unlink a file, we must have write  and execute permission in the directory containing the directory entry because we are modifying the directory entry 
 \item Only when the link count reaches 0 can the contents of the file be deleted
-\item If a process the file open, its contents will not be deleted
+\item If a process has the file open, its contents will not be deleted
   \begin{itemize}
   \item The kernel first checks the count of the number of processes that have the file open
   \item if this count has reaced \texttt{0}, the kernel then checks the link count
