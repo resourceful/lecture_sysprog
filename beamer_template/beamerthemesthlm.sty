@@ -102,7 +102,7 @@
 \RequirePackage[T1]{fontenc}
 \RequirePackage{comment}
 \RequirePackage[absolute,overlay]{textpos}
-
+\RequirePackage{enumitem}
 
 \usefonttheme{professionalfonts} 
 
@@ -449,7 +449,15 @@ columns=fullflexible
 \setbeamertemplate{itemize item}{$\Circle$}
 \setbeamertemplate{itemize subitem}{$\circ$}
 \setbeamertemplate{itemize subsubitem}{$\circ$}
-\setlength{\parskip}{-0.5em}
+
+\setitemize{label=$\Circle$,labelindent=\parindent,leftmargin=2em,topsep=0.5em,itemsep=0.5em,parsep=-0.5em,partopsep=-0.5em}
+\setitemize[2]{label=$\circ$,labelindent=\parindent,leftmargin=1em,topsep=0.5em,itemsep=0.5em,parsep=-0.5em,partopsep=-0.5em}
+\setitemize[3]{label=\textbullet,labelindent=\parindent,leftmargin=1em,topsep=0.5em,itemsep=0.5em,parsep=-0.5em,partopsep=-0.5em}
+
+
+\setlength{\parskip}{0.7em}
+\linespread{1.0}
+
 
 %-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 %	09. FOOTLINE
@@ -670,7 +678,7 @@ columns=fullflexible
 \renewcommand{\titlepage}{\otp\addtocounter{framenumber}{0}}
 \newcommand{\mreducelistspacing}{\vspace{-\topsep}}
 
-\linespread{1.15}
+
 
 
 
