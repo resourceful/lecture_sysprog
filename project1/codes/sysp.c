@@ -54,7 +54,6 @@ void withSync() {
 }
 
 int main(int argc, const char * argv[]) {
-	int i = 0;
 	withSync();
 	return 0;
 }
