@@ -13,5 +13,5 @@ o: ${texfile}
 final: ${texfile}
 	pdflatex --shell-escape --output-directory ${outdir} $< 
 	pdflatex --shell-escape --output-directory ${outdir} $< 
-	cp ${outdir}/${texfile} .
+	cp ${outdir}/$(basename $<).pdf .
 
