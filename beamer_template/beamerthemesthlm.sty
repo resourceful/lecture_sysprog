@@ -102,7 +102,7 @@
 \RequirePackage[T1]{fontenc}
 \RequirePackage{comment}
 \RequirePackage[absolute,overlay]{textpos}
-\RequirePackage{enumitem}
+% \RequirePackage{enumitem}
 \RequirePackage{caption}
 
 \usefonttheme{professionalfonts} 
@@ -453,9 +453,9 @@ aboveskip=1em
 \setbeamertemplate{itemize subitem}{$\circ$}
 \setbeamertemplate{itemize subsubitem}{$\circ$}
 
-\setitemize{label=$\Circle$,labelindent=\parindent,leftmargin=2em,topsep=0.7em,itemsep=0.5em,parsep=-0.5em,partopsep=-0.5em}
-\setitemize[2]{label=$\circ$,labelindent=\parindent,leftmargin=1em,topsep=0.7em,itemsep=0.5em,parsep=-0.5em,partopsep=-0.5em}
-\setitemize[3]{label=\textbullet,labelindent=\parindent,leftmargin=1em,topsep=0.7em,itemsep=0.5em,parsep=-0.5em,partopsep=-0.5em}
+%\setitemize{label=$\Circle$,labelindent=\parindent,leftmargin=2em,topsep=0.7em,itemsep=0.5em,parsep=-0.5em,partopsep=-0.5em}
+%\setitemize[2]{label=$\circ$,labelindent=\parindent,leftmargin=1em,topsep=0.7em,itemsep=0.5em,parsep=-0.5em,partopsep=-0.5em}
+%\setitemize[3]{label=\textbullet,labelindent=\parindent,leftmargin=1em,topsep=0.7em,itemsep=0.5em,parsep=-0.5em,partopsep=-0.5em}
 
 
 \setlength{\parskip}{0.3em}
@@ -470,10 +470,10 @@ aboveskip=1em
 \if@dosthlmFooter
 \setbeamertemplate{footline}{
 \hbox{
-\begin{beamercolorbox}[wd=0.10\textwidth,dp=1.5ex,leftskip=0.2cm,rightskip=0cm]{structure}
+\begin{beamercolorbox}[wd=0.12\textwidth,dp=1.5ex,leftskip=0.2cm,rightskip=0cm]{structure}
 \reflectbox{\includegraphics[width=0.1\textwidth]{../beamer_template/pictures/foxed.png}}
 \end{beamercolorbox}
-\begin{beamercolorbox}[wd=0.90\textwidth, dp=1.5ex,leftskip=0.3cm,rightskip=0.5cm plus1fil]{structure}
+\begin{beamercolorbox}[wd=0.86\textwidth, dp=1.5ex,leftskip=0.2cm,rightskip=0.5cm plus1fil]{structure}
 \usebeamerfont{page number in head/foot}
 \inserttitle\hfill\insertshortauthor\hfill\insertdate 
 \hfill \insertframenumber ~/ \inserttotalframenumber %\insertdocumentendpage
