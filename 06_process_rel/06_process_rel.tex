@@ -34,7 +34,7 @@
 
 \frame[plain]{\titlepage} 
 
-\frame{\frametitle{Table of contents}\tableofcontents} 
+\frame[t]{\frametitle{Table of contents}\tableofcontents} 
 
 
 %---------------------------------------------------------
@@ -46,9 +46,9 @@
 This chapter covers following items
   \begin{itemize}
   \item Terminal Logins
-  \item 
-  \item 
-  \item 
+  \item Sessions
+  \item Controlling Terminal
+  \item Job Control
   \end{itemize}
 
 \end{frame}
@@ -187,11 +187,225 @@ Each line specifies the name of the device and other parameters that are passed 
       \multicolumn{4}{l}{\footnotesize \texttt{chown(2)} terminal device} \\
       \multicolumn{4}{l}{\footnotesize \texttt{setuid(2)} to user's uid, \texttt{exec(3) shell}} \pause \\
       \texttt{\$SHELL} & PID N & PPID 0 & EUID U \pause \\ 
-      \texttt{ls(1)} & PID M & PPID N & EUID U \pause \\ 
+      \texttt{ls(1)} & PID M & PPID N & EUID U  \\ 
     \end{tabular}
   \end{table}
 \end{frame}
 
+
+
+
+
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{Process Groups}
+Each process belongs to a process group
+\begin{itemize}
+\item it is a collection of one or more processes
+\item usually associated with the same job
+\item the group has a unique process group ID
+\item the process group exista as long as one process is in the group
+\end{itemize}
+  
+\begin{codedef}
+#include <unistd.h>
+pid_t getpgrp(void);
+// Returns: process group ID of calling process
+\end{codedef}
+
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{Process group cont'd}
+A process joins an existing process group or creates a new process group by calling \texttt{setpgid}
+\begin{codedef}
+#include <unistd.h>
+int setpgid(pid_t pid, pid_t pgid);
+// Returns: 0 if OK, −1 on error
+\end{codedef}
+
+\begin{itemize}
+\item sets the process group ID to \textit{pgid} in the process whose process ID equals to pid
+\item if \texttt{pgid} == \texttt{pid}, then \texttt{pid} == process group leader
+\item if \texttt{pid} == 0, caller process ID is used
+\item if \texttt{pgid} == 0, group ID == \texttt{pid} 
+\item A porcess can set the process group ID of itself or its children
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile,t]
+  \frametitle{Sessions}
+
+
+\visible <4-> {The processes in a process group are usually placed ther by a shell pipeline}
+
+\visible<4-> {\texttt{proc1 | proc2 \&}}
+
+\visible<5-> {\texttt{proc3 | proc4 | proc5}}
+
+\bigskip
+
+\begin{tikzpicture}
+\uncover<1-> { \node [rectangle, minimum height=1em, minimum width=5.5em,draw] at (0,0) {login shell}; }
+\uncover<1-> { \draw [dashed] (-1.2, -0.5) rectangle (1.2,0.5) node [xshift=-1.1cm, yshift=-1.3cm, align=center] {process group}; }
+
+\uncover<2-> { \node [rectangle, minimum height=1em, draw] at (2.8,0) {proc1}; }
+\uncover<3-> { \node [rectangle, minimum height=1em, draw] at (4.3,0) {proc2};}
+\uncover<4-> { \draw [dashed] (2, -0.5) rectangle (5.1,0.5) node [xshift=-1.5cm, yshift=-1.3cm, align=center] {process group}; }
+
+\uncover<5-> { \node [rectangle, minimum height=1em, draw] at (6.8,0) {proc3}; }
+\uncover<5-> { \node [rectangle, minimum height=1em, draw] at (8.3,0) {proc4}; }
+\uncover<5-> { \node [rectangle, minimum height=1em, draw] at (7.6,-1) {proc5}; }
+\uncover<5-> { \draw [dashed] (6, -1.5) rectangle (9.2,0.5) node [xshift=-1.5cm, yshift=-2.3cm, align=center] {process group}; }
+
+\uncover<6-> { \draw [dashed] (-1.7,-2.2) rectangle (9.7,1) node [xshift=-5cm, yshift=-3.5cm] {session}; }
+\end{tikzpicture}
+
+\visible <6-> {Session is a collection of one or more process groups }
+
+\end{frame}
+
+\begin{frame}[fragile,t]
+  \frametitle{Sessions cont'd}
+
+A process establishes a new session by calling the \texttt{setsid} function
+\begin{codedef}
+#include <unistd.h>
+pid_t setsid(void);
+// Returns: process group ID if OK, −1 on error    
+\end{codedef}
+
+If the calling process is not a process group leader, this fuction creates a new session. Three things happen
+\begin{enumerate}
+\item <2-> process becomes the \textit{session leader}, and is only process in this new session
+\item <3-> the process becomes the process group leader (\texttt{pgid} ==\texttt{pid})
+  \begin{itemize}
+  \item if the caller is already a process group leader, then returns an error
+  \end{itemize}
+\item <4-> No contorlling terminal
+\end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}[fragile,t]
+  \frametitle{Sessions cont'd}
+\texttt{getsid} function returns the process group ID of a process's session leader
+
+\begin{codedef}
+#include <unistd.h> 
+pid_t getsid(pid_t pid);
+// Returns: session leader’s process group ID if OK, −1 on error  
+\end{codedef}
+
+if \texttt{pid} == 0, it returns the \texttt{pgid} of calling process's session leader
+\end{frame}
+
+
+
+\begin{frame}[t]
+  \frametitle{Controlling terminal}
+\begin{itemize}
+\item Session can have a single controlling terminal
+\item session leader that connects to controlling terminal is \textit{controlling process}
+\item process groups are divided into a single \textit{forground process group} and one or more \textit{background process groups}
+\item interrupt signals are sent to foreground process group
+\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}[t]
+  \frametitle{Controlling Terminal}
+\begin{tikzpicture}
+\node [rectangle, minimum height=1em, minimum width=5.5em,draw] at (0,0) {login shell};
+\draw [dashed] (-1.2, -0.5) rectangle (1.2,0.5) node [midway, align=center, text width=10em, yshift=-3em] {\footnotesize background process group, session leader = controlling process};
+
+\node [rectangle, minimum height=1em, draw] at (2.8,0) {proc1}; 
+\node [rectangle, minimum height=1em, draw] at (4.3,0) {proc2};
+\draw [dashed] (2, -0.5) rectangle (5.1,0.5) node [midway, align=center, text width=7em, yshift=-2.5em] { \footnotesize background process group};
+
+\node [rectangle, minimum height=1em, draw] at (6.8,0) {proc3}; 
+\node [rectangle, minimum height=1em, draw] at (8.3,0) {proc4}; 
+\node [rectangle, minimum height=1em, draw] at (7.6,-1) {proc5}; 
+\draw [dashed] (6, -1.5) rectangle (9.2,0.5) node [midway, align=center, yshift=-3em] {\footnotesize foreground process group};
+
+\draw [dashed] (-1.7,-2.2) rectangle (9.7,1) node [xshift=-6cm, yshift=0.5em] {session}; 
+
+
+\node [text width= 4em, align=center, circle, draw] at (2,-5.7) {\footnotesize controlling terminal};
+\draw [-Stealth] (1.5,-4.7) -- (0,-1.8) node [rotate=-65, midway,align=right,text width=8em] {\footnotesize modem disconnect (hang-up signal)};
+\draw [-Stealth] (2.8,-5) -- (7,-2) node [rotate=36, midway,align=left,text width=12em] {\footnotesize terminal input and terminal generated signals};
+\end{tikzpicture}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Job Control}
+
+We can start a job in either the forground or the background
+
+\begin{description}
+\item[foreground] \texttt{vi main.c} starts a job in the foreground
+\item[background] \texttt{make all \&} start a job in the background
+\end{description}
+
+\begin{verbatim}
+$ make all > Make.out & 
+[1] 1475
+$ pr *.c | lpr &
+[2] 1490
+$              just press RETURN
+[2] +  Done    pr *.c | lpr &
+[1] +  Done    make all > Make.out &
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[t]
+  \frametitle{Job Control cont'd}
+The foreground jobs are affected by some special characters, which generate signals
+\begin{itemize}
+\item Interrupt character (typically DELETE or Control-C) generates SIGINT
+\item Quit character (typically Control-bashslash) generates SIGQUIT
+\item Suspend character (typically Control-Z) generatea SIGTSTP
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile,t]
+  \frametitle{Job Control cont'd}
+
+\begin{codedefnb}
+1  $ cat > temp.foo &    
+   [1] 1681
+2  $                     
+   [1] + Stopped (SIGTTIN)        cat > temp.foo &
+3  $ fg %1               
+4  cat > temp.foo        
+5  hello, world          
+6  ^D                   
+7  $ cat temp.foo        
+   hello, world
+\end{codedefnb}
+
+\begin{enumerate}
+\item \footnotesize  start in background, but it’ll read from standard input
+\item \footnotesize  we press RETURN
+\item \footnotesize  bring job number 1 into the foreground
+\item \footnotesize  the shell tells us which job is now in the foreground
+\item \footnotesize  enter one line
+\item \footnotesize  type the end-of-file character
+\item \footnotesize  check that the one line was put into the file
+\end{enumerate}
+
+\end{frame}
 
 
 %---------------------------------------------------------
@@ -200,12 +414,7 @@ Each line specifies the name of the device and other parameters that are passed 
 \begin{frame}[t]
   \frametitle{Last Words}
 \begin{itemize}
-\item 
-\item 
-\item 
-\item 
-\item 
-\item 
+\item Read chapter 10
 \end{itemize}
 \end{frame}
 
