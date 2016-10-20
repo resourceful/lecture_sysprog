@@ -434,7 +434,7 @@ we can see that the \texttt{longjmp} from the \texttt{sleep2} aborted the other 
     analyze Fig 10.10 and Fig 10.11
 
   \end{frame}
-
+\end{comment}
 
 
 
@@ -454,13 +454,57 @@ int sigismember(const sigset_t *set, int signo);
 // Returns: 1 if true, 0 if false, −1 on error
 \end{codedef}
 
+\begin{itemize}
+\item \footnotesize \texttt{sigemptyset()} initializes the signal set pointed to by set so that all signals are \textit{excluded}
+\item \footnotesize \texttt{sigfillset()} initializes the signal set
+\item \footnotesize all applications have to call either \texttt{sigemptyset} or \texttt{sigfillset} once for each signal set, before using signal set
+\item \footnotesize \texttt{sigaddset} adds a single signal to an existing set
+\item \footnotesize \texttt{sigdelset} removes a single signal from a set
+\end{itemize}
+
 \end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[fragile,t,allowframebreaks]
+  \frametitle{Signal Sets cont'd}
+An implementation of \texttt{sigaddset}, \texttt{sigdelset}, and \texttt{sigismember}
+\lstinputlisting[lineskip=0pt]{codes/setops.c}
+
+POSIX.1 requires us to check the signal number argument for validity and to set \texttt{errno} if it si invalid
+\end{frame}
+
 
 
 \begin{frame}[fragile,t]
   \frametitle{\texttt{sigprocmask} Function}
-  
+A process can \textit{examine} its signal mask, \textit{change} its signal mask, \textit{or perform both} operations by calling following function
+
+\begin{codedef}
+#include <signal.h>
+int sigprocmask(int how, const sigset_t *restrict set, 
+                sigset_t *restrict oset);
+// Returns: 0 if OK, −1 on erro    
+\end{codedef}
 \end{frame}
+
+
+
+\begin{frame}[fragile,t]
+  \frametitle{\texttt{sigprocmask} Function}
+\begin{codedef}
+#include <signal.h>
+int sigprocmask(int how, const sigset_t *restrict set, 
+                sigset_t *restrict oset);
+// Returns: 0 if OK, −1 on erro    
+\end{codedef}
+\end{frame}
+
 
 
 \begin{frame}[fragile,t]
@@ -524,7 +568,7 @@ int sigismember(const sigset_t *set, int signo);
   \frametitle{Signal Names and Numbers}
   
 \end{frame}
-\end{comment}
+
 %---------------------------------------------------------
 \section{Last Words}
 
