@@ -42,7 +42,7 @@
 
 
 \begin{frame}[t]
-  \frametitle{introduction}
+  \frametitle{Introduction}
 This chapter covers following items
   \begin{itemize}
   \item The concept
@@ -71,7 +71,7 @@ Every signal has a name that begins with \texttt{SIG} and it is assigned with a 
   \frametitle{Signal Concepts}
 Signal generating conditions
 \begin{enumerate}
-\item <1-> terminal generated signals (\texttt{DELETE} or \texttt{\^-C} on many systems) causes the interrupt signal (\texttt{SIGINT})
+\item <1-> terminal generated signals (\texttt{DELETE} or \texttt{$^\wedge$-C} on many systems) causes the interrupt signal (\texttt{SIGINT})
 \item <2-> Hardware exceptions generate singals
   \begin{itemize}
   \item <2-> invalid memory reference (\texttt{SIGSEGV})
@@ -226,18 +226,23 @@ The solution of 4.2BSD was to introduce the automatic restaring of \texttt{ioctl
 
 \begin{frame}[fragile,t]
   \frametitle{Reentrant Functions}
+
+Scenario
+\begin{enumerate}
+\item <1-> while process is running, it catches a signal. process is temporarily interrupted by the signal handler
+\item <2-> instructions in signal handler executes
+\item <3-> upon return of signal handler, the process continues to run
+\end{enumerate}
+
+\uncover<3-> {The problem is that signal handler can't tell whether a process was in the middle of execution. \textit{The result becomes unpredictable}}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Reentrant Functions cont'd}
 \begin{block}{Reentrant Functions}
 Reentrant fuctions are guarnateed to be safe to call from within a signal hanlder.   They are also called \textit{async-signal safe}. As a general rule, when calling the reentrant  functions from a signal handler, we should save and restore \texttt{errno}.
 \end{block}
-
-\uncover<2-> {Scenario}
-\begin{enumerate}
-\item <2-> while process is running, it catches a signal. process is temporarily interrupted by the signal handler
-\item <3-> instructions in signal handler executes, the returns
-\item <4-> upon return of signal handler, the process continues to run
-\end{enumerate}
-
-\uncover<5-> {The problem is that signal handler can't tell whether a process was in the middle of execution. \textit{The result becomes unpredictable}}
 \end{frame}
 
 \begin{frame}
@@ -250,8 +255,14 @@ Reentrant fuctions are guarnateed to be safe to call from within a signal hanlde
 \end{frame}
 
 
+\begin{frame}[fragile,allowframebreaks,t]
+  \frametitle{Reentrant Functions example}
+\texttt{codes/reenter.c}
+\lstinputlisting[lineskip=-3pt]{codes/reenter.c}
+\end{frame}
+
 \begin{comment}
-  \begin{frame}[fragile,t]
+  \begin{frame}[fragile,t, allowframebreaks]
     \frametitle{SIGCLD Semantics}
     Beware the semantics of \texttt{SIGCLD} and \texttt{SIGCHLD} is
     different
@@ -474,9 +485,9 @@ int sigismember(const sigset_t *set, int signo);
 \begin{frame}[fragile,t,allowframebreaks]
   \frametitle{Signal Sets cont'd}
 An implementation of \texttt{sigaddset}, \texttt{sigdelset}, and \texttt{sigismember}
-\lstinputlisting[lineskip=0pt]{codes/setops.c}
+\lstinputlisting[lineskip=-3pt]{codes/setops.c}
 
-POSIX.1 requires us to check the signal number argument for validity and to set \texttt{errno} if it si invalid
+POSIX.1 requires us to check the signal number argument for validity and to set \texttt{errno} if it is invalid
 \end{frame}
 
 
@@ -491,35 +502,179 @@ int sigprocmask(int how, const sigset_t *restrict set,
                 sigset_t *restrict oset);
 // Returns: 0 if OK, −1 on erro    
 \end{codedef}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{l | p{8cm}}
+    \texttt{SIG\_BLOCK} & \textit{set} contains the additional signal that we want to block \\ 
+    \texttt{SIG\_UNBLOCK} & \textit{set} contains the additional signal that we want to unblock \\ 
+    \texttt{SIG\_SETMASK} & the new signal mask for the process is replaced by the value of the signal set pointed to by \textit{set}
+  \end{tabular}
+  \caption{ways to change the current signal mask using \texttt{sigprocmask}}
+  \label{tab:sigprocmask}
+\end{table}
+
 \end{frame}
 
-
-
-\begin{frame}[fragile,t]
-  \frametitle{\texttt{sigprocmask} Function}
-\begin{codedef}
-#include <signal.h>
-int sigprocmask(int how, const sigset_t *restrict set, 
-                sigset_t *restrict oset);
-// Returns: 0 if OK, −1 on erro    
-\end{codedef}
-\end{frame}
 
 
 
 \begin{frame}[fragile,t]
   \frametitle{\texttt{sigpending} Function}
-  
+
+\texttt{sigpending} returns the set of signals that are blocked from delievery and currently pending for the calling process.
+
+the set of signals is returned through the set argument
+\begin{codedef}
+#include <signal.h>
+int sigpending(sigset_t *set);
+// Returns: 0 if OK, −1 on error  
+\end{codedef}
 \end{frame}
+
+
+
+
+\begin{frame}[fragile,t, allowframebreaks]
+  \frametitle{\texttt{sigpending} Example}
+
+\texttt{cd codes; make critical}
+\lstinputlisting[lineskip=-3pt]{codes/critical.c}
+
+\end{frame}
+
 
 
 
 \begin{frame}[fragile,t]
-  \frametitle{\texttt{sigaction} Function}
+  \frametitle{\texttt{sigpending} Example}
+\begin{columns}[t]
+\begin{column}{0.5\linewidth}
+{\footnotesize
+\begin{verbatim}
+C-\ to generate SIGQUIT signal
+SIGQUIT unblocked
+C-\ to generate SIGQUIT signal again
+
+James@maker:codes$ ./critical
+C-\ to generate SIGQUIT signal
+^\
+SIGQUIT pending
+caught SIGQUIT
+SIGQUIT unblocked
+C-\ to generate SIGQUIT signal again
+^\Quit: 3
+\end{verbatim} 
+}
+\end{column}
+\begin{column}{0.5\linewidth}
+{\footnotesize
+\begin{verbatim}
+James@maker:codes$ ./critical
+C-\ to generate SIGQUIT signal
+^\^\^\^\^\
+SIGQUIT pending
+caught SIGQUIT
+SIGQUIT unblocked
+C-\ to generate SIGQUIT signal again
+^\Quit: 3
+James@maker:codes$
+\end{verbatim}
+}
+\end{column}
+\end{columns}
+
+
+
   
 \end{frame}
 
 
+\begin{frame}[fragile,fragile,t]
+  \frametitle{\texttt{sigaction} Function}
+\texttt{sigaction} allows to examine or modify the action associated with a particular signal
+\begin{codedef}
+#include <signal.h>
+int sigaction(int signo, const struct sigaction *restrict act,
+              struct sigaction *restrict oact);
+// Returns: 0 if OK, −1 on error  
+\end{codedef}
+
+\begin{itemize}
+\item \textit{signo} is the signal number to examine or to modify
+\item if \textit{act} pointer non-null, we are modifying the actino
+\item if \textit{oact} pointer is non-null, the system returns the revious action to \textit{oact} pointer
+\end{itemize}
+
+\texttt{signal(3)} can be implemented via \texttt{sigaction(2)}
+\end{frame}
+
+
+
+\begin{frame}[fragile, containsverbatim,t]
+  \frametitle{\texttt{sigaction} Function cont'd}
+\texttt{sigaction} uses following structure
+{\footnotesize
+\begin{verbatim}
+struct sigaction {
+   void     (*sa_handler)(int);  /* addr of signal handler, */
+                                 /* or SIG_IGN, or SIG_DFL */
+   sigset_t sa_mask;             /* additional signals to block */
+   int      sa_flags;            /* signal options, Figure 10.16 */
+   /* alternate handler */
+   void     (*sa_sigaction)(int, siginfo_t *, void *);
+};
+\end{verbatim}
+}
+{\footnotesize
+\begin{itemize}
+\item \texttt{sa\_handler} field contains teh address of signal catching function
+\item \texttt{sa\_mask} specifies a set of singals that are added to the signal mask before the signal-catching function is called
+\item if and when the signal catching function returns, the signal mask of the process is reset to its previous value
+\item OS includes the signal being delivered in the signal mask when the handler is invoked
+\item the signal handler remain installed until explicitly changed
+\end{itemize}
+}
+\end{frame}
+
+
+\begin{frame}[fragile,t]
+  \frametitle{\texttt{sigaction} Function cont'd}
+\texttt{cd codes; vi sigaction\_sig.c}
+\lstinputlisting[lineskip=-3pt]{codes/sigaction_sig.c}
+
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{\texttt{abort} Function}
+\begin{codedef}
+#include <stdlib.h>
+void abort(void);
+// This function never returns  
+\end{codedef}
+
+This function sends the \texttt{SIGABRT} signal to the caller
+
+The intent of letting the process catch the \texttt{SIGABTRT} is to allow it to perform any cleanup that it wants to do before the process terminates
+
+\end{frame}
+
+
+
+%---------------------------------------------------------
+\section{Last Words}
+
+\begin{frame}[t]
+  \frametitle{Last Words}
+
+\begin{itemize}
+\item Read Chapter 11
+\end{itemize}
+\end{frame}
+
+
+
+\begin{comment}
 \begin{frame}[fragile,t]
   \frametitle{\texttt{segsetjmp} and \texttt{siglongjmp} Functions}
   
@@ -532,11 +687,6 @@ int sigprocmask(int how, const sigset_t *restrict set,
 \end{frame}
 
 
-
-\begin{frame}[fragile,t]
-  \frametitle{\texttt{abort} Function}
-  
-\end{frame}
 
 
 \begin{frame}[fragile,t]
@@ -568,15 +718,6 @@ int sigprocmask(int how, const sigset_t *restrict set,
   \frametitle{Signal Names and Numbers}
   
 \end{frame}
-
-%---------------------------------------------------------
-\section{Last Words}
-
-\begin{frame}[t]
-  \frametitle{Last Words}
-\begin{itemize}
-\item Prepare for Exam
-\end{itemize}
-\end{frame}
+\end{comment}
 
 \end{document}

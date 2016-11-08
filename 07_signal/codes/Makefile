@@ -1,5 +1,5 @@
 
-PROGRAMS = usr_sig tsleep
+PROGRAMS = usr_sig tsleep critical reenter
 
 CFLAGS = -g -Wall -O0
 
