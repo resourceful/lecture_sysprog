@@ -1,3 +1,3 @@
-This is Lecture note on signals 1/2.
+This is Lecture note on signals .
 
-Visit following link for [course description](http://resourceful.github.io/classes/2016-10-17-week7-class7-processrel/)
+Visit following link for [course description](http://resourceful.github.io/classes/2016-11-09-week10-class8-signal/)
