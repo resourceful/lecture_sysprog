@@ -56,6 +56,7 @@ This chapter covers following items
 \section{Signal Concepts}
 
 
+
 \begin{frame}[t]
   \frametitle{Signal Concepts}
 
@@ -118,6 +119,28 @@ The process has to tell the kernel ``if and when this signal occurs, do the foll
   \end{figure}
 \end{frame}
 
+
+
+
+\begin{frame}[t]
+  \frametitle{Signal Concepts cnt'd}
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{figure/signal_concept.png}
+    \caption{Signal handling concept}
+  \end{figure}
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+
 \begin{frame}[fragile,t]
   \frametitle{\texttt{signal} Function}
 \begin{codedef}
@@ -162,6 +185,62 @@ James@maker:codes$ kill -INT 4987
 James@maker:codes$
 \end{codedefnb}
 \end{frame}
+
+
+\begin{frame}[fragile,t]
+  \frametitle{Signal Exmaples cnt'd}
+\begin{columns}[t]
+\begin{column}{0.5\linewidth}
+{\scriptsize
+\begin{verbatim}
+$ sleep 100 &
+[ 1 ] 3486
+$ pgrep sleep
+3486
+$ ps aux | grep sleep
+
+$ sleep 100 &
+[ 1 ]  3490
+$ kill 3490  # kills pid 3490 gracefully
+$ 
+[ 1 ]+ Terminated: 15    sleep 100
+
+$ sleep 100 &
+[ 1 ] 3437
+$ jobs -l
+[ 1 ]+ 3637 Running   sleep 100 &
+$ kill -s STOP 3637
+[ 1 ]+ Stopped    sleep  100
+$ kill –s CONT 3637
+[ 1 ]+ 3637 suspended (signal): 17 sleep 100
+\end{verbatim}
+}  
+\end{column}
+\begin{column}{0.5\linewidth}
+{\scriptsize
+\begin{verbatim}
+$ sleep 100 &
+[ 1 ]  3490
+$ kill –s SIGKILL 3490
+Or
+$ kill –s KILL 3490
+Or
+$ kill –SIGKILL 3490
+Or 
+$ kill –KILL 3490
+Or
+$ kill –s 9 3490
+Or
+$ kill -9 3490
+[ 1 ]+ Killed: 15    sleep 100
+\end{verbatim}
+} 
+\end{column}
+\end{columns}
+
+
+\end{frame}
+
 
 
 
@@ -452,7 +531,7 @@ we can see that the \texttt{longjmp} from the \texttt{sleep2} aborted the other 
 
 \begin{frame}[fragile,t]
   \frametitle{Signal Sets}
-We need a data type ot represent multiple signals---\textit{signal set}
+We need a data type to represent multiple signals---\textit{signal set}
 
 \begin{codedef}
 #include <signal.h>
@@ -518,6 +597,25 @@ int sigprocmask(int how, const sigset_t *restrict set,
 
 
 
+\begin{frame}[fragile,t,allowframebreaks]
+  \frametitle{\texttt{sigprocmask} Function}
+\texttt{cd codes; vi ex\_block.c}
+\lstinputlisting[lineskip=0pt]{codes/ex_block.c}
+
+\end{frame}
+
+\begin{frame}[fragile,t]
+  \frametitle{\texttt{sigprocmask} Function cnt'd}
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{figure/fig_proc.png}
+    \caption{Example of sigprocmask}
+  \end{figure}
+
+\end{frame}
+
+
+
 
 \begin{frame}[fragile,t]
   \frametitle{\texttt{sigpending} Function}
@@ -548,14 +646,14 @@ int sigpending(sigset_t *set);
 
 \begin{frame}[fragile,t]
   \frametitle{\texttt{sigpending} Example}
-\begin{columns}[t]
-\begin{column}{0.5\linewidth}
-{\footnotesize
-\begin{verbatim}
 C-\ to generate SIGQUIT signal
 SIGQUIT unblocked
 C-\ to generate SIGQUIT signal again
 
+\begin{columns}[t]
+\begin{column}{0.5\linewidth}
+{\footnotesize
+\begin{verbatim}
 James@maker:codes$ ./critical
 C-\ to generate SIGQUIT signal
 ^\
