@@ -6,7 +6,7 @@ CFLAGS = -g -Wall -O0
 all: ${PROGRAMS}
 
 %.o: %.c
-	${CC} ${CFLAGS} -c $<
+	${CC} ${CFLAGS} -pthread -c $<
 
 ${PROGRAMS}: %: %.o
 	${CC} ${CFLAGS} -o $@ $< 
