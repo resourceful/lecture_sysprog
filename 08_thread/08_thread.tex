@@ -932,7 +932,7 @@ When we call \texttt{pthread\_cond\_signal} or \texttt{pthread\_cond\_broadcast}
 \begin{frame}[t, fragile, allowframebreaks]
   \frametitle{Condition Variables cnt'd: \texttt{codes/condvar.c}}
 example of how to use a condition variable and a mutex together to synchronize threads.
-\lstinputlisting[lineskip=0pt]{codes/rwlock.c}  
+\lstinputlisting[lineskip=0pt]{codes/condvar.c}  
 
 We protect the condition with a mutex and evaluate the condition in a while loop. 
 \begin{itemize}
