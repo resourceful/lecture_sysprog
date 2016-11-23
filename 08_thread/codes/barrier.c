@@ -17,6 +17,8 @@ pthread_barrier_t b;
 
 #ifdef SOLARIS
 #define heapsort qsort
+#elif linux
+#define heapsort qsort
 #else
 extern int heapsort(void *, size_t, size_t,
                     int (*)(const void *, const void *));
@@ -120,6 +122,6 @@ main()
 	elapsed = (double)(endusec - startusec) / 1000000.0;
 	printf("sort took %.4f seconds\n", elapsed);
 	for (i = 0; i < NUMNUM; i++)
-//		printf("%ld\n", snums[i]);
+		printf("%ld\n", snums[i]);
 	exit(0);
 }
