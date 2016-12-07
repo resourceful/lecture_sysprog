@@ -416,7 +416,6 @@ prog1 < infile | tee fifo1 | prog2
 \end{frame}
 
 
-
 \begin{frame}[t, fragile, allowframebreaks]
   \frametitle{Example - Client Server Communication Using FIFO}
 \bigskip
@@ -437,7 +436,6 @@ prog1 < infile | tee fifo1 | prog2
 \lstinputlisting[lineskip=-3pt]{codes/client.c}  
 \end{frame}
 
-
 \section{XSI IPC}
 \subsection{General Background}
 \begin{frame}[t]
@@ -449,7 +447,6 @@ There are three types of IPC that we call XSI IPC
 \item shared memory
 \end{enumerate}
 \end{frame}
-
 
 
 \begin{frame}[t]
@@ -464,7 +461,6 @@ Each IPC \textit{structure} in the kernel is referred to by a non-negative integ
 \item identifier is an internal name for an IPC object
 \end{itemize}
 \end{frame}
-
 
 \begin{frame}[t, fragile]
   \frametitle{Identifiers and Keys}
@@ -793,7 +789,7 @@ A common form of semaphore is called a \textit{binary semaphore}
 
 
 \begin{frame}[t]
-  \frametitle{XSI Semahores}
+  \frametitle{XSI Semaphores}
 XSI semaphores are more complicated than this. Three features contribute to this unnecessary complication.
 \begin{enumerate}
 \item A semaphore is defined as a set of one or more semaphore values. When we create a semaphore, we specify the number of values in the set.
@@ -1029,7 +1025,7 @@ shared memory attached from 0x108611000 to 0x1086296a0
 
 
 
-\begin{frame}[t]
+\begin{frame}[t,fragile, allowframebreaks]
   \frametitle{Shared Memory Example: Server - Client}
 \texttt{codes/shm\_send.c}
 \lstinputlisting[lineskip=-3pt]{codes/shm_send.c} 
