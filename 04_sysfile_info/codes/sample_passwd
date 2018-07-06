@@ -1,4 +1,0 @@
-root:x:0:0:root:/root:/bin/bash
-squid:x:23:23::/var/spool/squid:/dev/null
-nobody:x:65534:65534:Nobody:/home:/bin/sh
-sar:x:205:105:Stephen Rago:/home/sar:/bin/bash
