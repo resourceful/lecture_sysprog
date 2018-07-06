@@ -1,6 +1,6 @@
-% Author: Seongjin Lee 
-% Hanyang University, Seoul, Korea 
-% esos.hanyang.ac.kr 
+% Author: Seongjin Lee
+% Hanyang University, Seoul, Korea
+% esos.hanyang.ac.kr
 % 2016-09-01
 % note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
 % https://github.com/resourceful/lecture_sysprog/
@@ -9,9 +9,9 @@
 \usepackage{kotex}
 %\usetheme{sthlm}
 \usepackage{../beamer_template/beamerthemesthlm}
-\hypersetup{pdfauthor={Seongjin Lee (insight@hanyang.ac.kr)},
+\hypersetup{pdfauthor={Seongjin Lee (insight@gnu.ac.kr)},
             pdfsubject={Lecture Note: System Programming},
-            pdfkeywords={Lecture Note, System Programming, class, undergraduate},
+            pdfkeywords={Lecture Note, System Programming, class, (under)graduate},
             pdfmoddate={D: \pdfdate},
             pdfcreator={Seongjin Lee}}
 
@@ -24,20 +24,20 @@
 \title{System Programming}
 \subtitle{Week 1: Introduction to System Programming}
 \author[SJL]{Seongjin Lee}
-\institute{\href{mailto:insight@hanyang.ac.kr}{insight@hanyang.ac.kr}\\\url{http://esos.hanyang.ac.kr}\\Esos Lab. Hanyang University}
-\date{2016-09-07} 
+\institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
+\date{\today}
 
 \begin{document}
 
 
 
-\frame[plain]{\titlepage} 
+\frame[plain]{\titlepage}
 
-\frame{\frametitle{Table of contents}\tableofcontents} 
+\frame{\frametitle{Table of contents}\tableofcontents}
 
 
 %---------------------------------------------------------
-\section{Nutshell} 
+\section{Nutshell}
 
 \begin{frame}[t]{}
 \begin{figure}\centering
@@ -55,7 +55,7 @@
 
 \begin{frame}[t]{What we are going to learn}
 \begin{itemize}
- \item Familiarize with \textsc{Unix} 
+ \item Familiarize with \textsc{Unix}
  \item Experience systems programming
  \item Understand fundamental OS concepts
   \begin{itemize}
@@ -79,7 +79,7 @@
 \end{frame}
 
 
-\begin{frame}[t]{How are going to do?}
+\begin{frame}[t]{How are we going to do?}
 \lstinputlisting{./codes/welcome.c}
 
 How to compile \\
@@ -89,11 +89,11 @@ How to compile \\
 \begin{frame}[t,fragile]{Errors and Warnings}
 \begin{lstlisting}
 $ gcc -Wall -g -o welcome welcome.c
-welcome.c:6:81: warning: implicit declaration of function 'getlogin' 
+welcome.c:6:81: warning: implicit declaration of function 'getlogin'
         is invalid in C99 [-Wimplicit-function-declaration]
         printf("Welcome to System Programming, %s!\n", getlogin())
                                                        ^
-welcome.c:6:81: warning: format specifies type 'char *' but the 
+welcome.c:6:81: warning: format specifies type 'char *' but the
         argument has type 'int' [-Wformat]
         printf("Welcome to System Programming, %s!\n", getlogin())
                                                ~~      ^~~~~~~~~~
@@ -133,7 +133,7 @@ Grading:
 	\item Quiz 5$\%$
 	\item Midterm Exam 30$\%$
 	\item Final Exam 30$\%$
-	\item Level test on editors 
+	\item Level test on editors
 \end{itemize}
 \end{multicols}
 \end{frame}
@@ -156,8 +156,8 @@ Week 3 09-21 Files IO \& ctag/etag
 %\\•	Text editor with ctag/etag
 
 \hangindent=1cm
-Week 4 09-28 Files and Directories 
-%\\•	On struct stat 
+Week 4 09-28 Files and Directories
+%\\•	On struct stat
 %\\•	Device special files
 %\\•	Related operations
 
@@ -220,7 +220,7 @@ Week 16 12-21 (기말고사)
 %---------------------------------------------------------
 \section{History}
 \begin{frame}[t]{The \textsc{Unix} History}
-For more info : 
+For more info :
 \url{http://www.unix.org/what_is_unix/history_timeline.html}
 \bigskip
 \begin{itemize}
@@ -328,7 +328,7 @@ applications $>$ shell
 
 
 \begin{frame}[t]{System Calls and Library Calls}
-\begin{block}{System calls} 
+\begin{block}{System calls}
 They are entry points into kernel code where their functions are implemented.  Documented in section 2 of the manual (e.g. \texttt{write(2)} or \texttt{\$man 2 write}).
 \end{block}
 \bigskip
@@ -399,7 +399,7 @@ void perror(const char *msg)
 \end{frame}
 
 \begin{frame}[t]{What is Vi(m)}
-\textbf{Vi} is a visual screen text editor developed by Bill Joy, who later becomes co-founder of Sun Micro Systems 
+\textbf{Vi} is a visual screen text editor developed by Bill Joy, who later becomes co-founder of Sun Micro Systems
 \begin{itemize}
 \item It is visual version of \textbf{ex}, a Unix line editor
 \item Vi is available on most Unix Systems
@@ -474,10 +474,10 @@ Moving by units of word, sentence, paragraph
 \end{itemize}
 
 
-\keystroke{w} next word \hfill \keystroke{b} previous word \hfill \keystroke{(} Beginning of sentence 
+\keystroke{w} next word \hfill \keystroke{b} previous word \hfill \keystroke{(} Beginning of sentence
 
 \bigskip
-\keystroke{)} end of sentence \hfill \keystroke{\{} Beginning of paragraph \hfill \keystroke{\}} end of paragraph 
+\keystroke{)} end of sentence \hfill \keystroke{\{} Beginning of paragraph \hfill \keystroke{\}} end of paragraph
 \end{frame}
 
 
@@ -511,7 +511,7 @@ Searching in vi is done in last line mode
 \end{itemize}
 \bigskip
 
-\keystroke{r} replaces a character 
+\keystroke{r} replaces a character
 \begin{itemize}
 \item Suppose the cursor is on \keystroke{b}, and by \keystrokered{r} \keystroke{p} we can change it to “preview”
 \end{itemize}
@@ -530,7 +530,7 @@ Searching in vi is done in last line mode
 Find i and substitute with X once
 \vspace{0.5em}
 \begin{center}
-\begin{tabular}{ p{1cm} c p{3cm} c p{3cm}} 
+\begin{tabular}{ p{1cm} c p{3cm} c p{3cm}}
 \keystrokered{:s/i/X} & $\rightarrow$ & This is preview. How it is done & $\rightarrow$ & ThXs is preview. How it is done \\
 \end{tabular}
 \end{center}
@@ -538,7 +538,7 @@ Find i and substitute with X once
 Find i and substitute with X in the same line
 \vspace{0.5em}
 \begin{center}
-\begin{tabular}{ p{1cm} c p{3cm} c p{3cm}} 
+\begin{tabular}{ p{1cm} c p{3cm} c p{3cm}}
 \keystrokered{:s/i/X/g} & $\rightarrow$ & This is preview. How it is done & $\rightarrow$ & ThXs is prevXew. How it is done \\
 \end{tabular}
 \end{center}
@@ -546,7 +546,7 @@ Find i and substitute with X in the same line
 Find i and substitute with X in all the lines
 \vspace{0.5em}
 \begin{center}
-\begin{tabular}{ p{1cm} c p{3cm} c p{3cm}} 
+\begin{tabular}{ p{1cm} c p{3cm} c p{3cm}}
 \keystrokered{:\%s/i/X/g} & $\rightarrow$ & This is preview. How it is done & $\rightarrow$ & ThXs is prevXew. How Xt Xs done \\
 \end{tabular}
 \end{center}
@@ -556,14 +556,14 @@ Find i and substitute with X in all the lines
 
 
 \begin{frame}[t]{Undo and Redo}
-Undo in vi is done by \keystroke{u} 
+Undo in vi is done by \keystroke{u}
 \begin{itemize}
 \item Or to do in last line mode you could type in \keystroke{:undo}
 \item \keystroke{U} undo all latest changes on one line
 \end{itemize}
 \bigskip
 
-Redo in vi is done by \keystroke{CTRL}\keystroke{R} 
+Redo in vi is done by \keystroke{CTRL}\keystroke{R}
 \begin{itemize}
 \item Or to do in last line mode you could type in \keystroke{:redo}
 \end{itemize}
@@ -575,8 +575,8 @@ Redo in vi is done by \keystroke{CTRL}\keystroke{R}
 \begin{frame}[containsverbatim,t]{Simple Tutorial: From Start to quit}
 This simple tutorial illustrates how to write, delete, copy, paste, replace, save, and quit. Start \texttt{vi} by \texttt{vi newfile.txt}  and type the following
 \begin{beamercolorbox}[sep=1em,wd=\linewidth]{boxsthlmLightOrange}
-\keystroke{i}~ This is how we write \keystroke{esc}~ \keystroke{o}~ and copy lines \keystroke{esc}~ \keystroke{k}~ \keystroke{y}~\keystroke{y}~ \keystroke{j}~ \keystroke{p}~ 
-\keystroke{k}~ \keystroke{y}~ \keystroke{3}~ \keystroke{w}~ \keystroke{j}~ \keystroke{)}~ \keystroke{a}~ \keystroke{space bar}~ \keystroke{esc}~ \keystroke{p}~ \keystroke{o}~ ummm \keystroke{esc}~ \keystroke{b}~ \keystroke{x}~ \keystroke{r}~ 
+\keystroke{i}~ This is how we write \keystroke{esc}~ \keystroke{o}~ and copy lines \keystroke{esc}~ \keystroke{k}~ \keystroke{y}~\keystroke{y}~ \keystroke{j}~ \keystroke{p}~
+\keystroke{k}~ \keystroke{y}~ \keystroke{3}~ \keystroke{w}~ \keystroke{j}~ \keystroke{)}~ \keystroke{a}~ \keystroke{space bar}~ \keystroke{esc}~ \keystroke{p}~ \keystroke{o}~ ummm \keystroke{esc}~ \keystroke{b}~ \keystroke{x}~ \keystroke{r}~
 E \keystroke{l}~ \keystroke{r}~ N \keystroke{l}~ \keystroke{r}~ D \keystroke{:}~ \keystroke{w}~ \keystroke{q}~ \keystroke{enter}~
 \end{beamercolorbox}
 \bigskip
@@ -598,15 +598,15 @@ END
 
 \begin{frame}[containsverbatim,t]{Simple Tutorial: From Start to quit}
 \begin{beamercolorbox}[sep=1em,wd=\linewidth]{boxsthlmLightOrange}
-\keystroke{i}~ This is how we write \keystroke{esc}~ \keystroke{o}~ and copy lines \keystroke{esc}~ \keystroke{k}~ \keystroke{y}~\keystroke{y}~ \keystroke{j}~ \keystroke{p}~ 
-\keystroke{k}~ \keystroke{y}~ \keystroke{3}~ \keystroke{w}~ \keystroke{j}~ \keystroke{)}~ \keystroke{a}~ \keystroke{space bar}~ \keystroke{esc}~ \keystroke{p}~ \keystroke{o}~ ummm \keystroke{esc}~ \keystroke{b}~ \keystroke{x}~ \keystroke{r}~ 
+\keystroke{i}~ This is how we write \keystroke{esc}~ \keystroke{o}~ and copy lines \keystroke{esc}~ \keystroke{k}~ \keystroke{y}~\keystroke{y}~ \keystroke{j}~ \keystroke{p}~
+\keystroke{k}~ \keystroke{y}~ \keystroke{3}~ \keystroke{w}~ \keystroke{j}~ \keystroke{)}~ \keystroke{a}~ \keystroke{space bar}~ \keystroke{esc}~ \keystroke{p}~ \keystroke{o}~ ummm \keystroke{esc}~ \keystroke{b}~ \keystroke{x}~ \keystroke{r}~
 E \keystroke{l}~ \keystroke{r}~ N \keystroke{l}~ \keystroke{r}~ D \keystroke{:}~ \keystroke{w}~ \keystroke{q}~ \keystroke{enter}~
 \end{beamercolorbox}
 
 The command in the tutorial
 
 \begin{beamercolorbox}[sep=1em,wd=\linewidth]{boxsthlmLightPurple}
-\keystroke{i} insert \hfill \keystroke{esc} back to command mode \hfill \keystroke{o} add new line after current line \hfill \keystroke{k} move cursor up \hfill \keystroke{yy} copy a line \hfill \keystroke{j} move cursor down \hfill \keystroke{p} paste after cursor point \hfill  \keystroke{y3w} copy three words \hfill \keystroke{)} move to end of sentence \hfill \keystroke{a} append \hfill \keystroke{b} move cursor to previous word \hfill \keystroke{x} erase a character \hfill \keystroke{r} replace a character \hfill \keystroke{l} move cursor right \hfill \keystroke{:wq} write to a file and quit 
+\keystroke{i} insert \hfill \keystroke{esc} back to command mode \hfill \keystroke{o} add new line after current line \hfill \keystroke{k} move cursor up \hfill \keystroke{yy} copy a line \hfill \keystroke{j} move cursor down \hfill \keystroke{p} paste after cursor point \hfill  \keystroke{y3w} copy three words \hfill \keystroke{)} move to end of sentence \hfill \keystroke{a} append \hfill \keystroke{b} move cursor to previous word \hfill \keystroke{x} erase a character \hfill \keystroke{r} replace a character \hfill \keystroke{l} move cursor right \hfill \keystroke{:wq} write to a file and quit
 \end{beamercolorbox}
 
 \end{frame}
@@ -649,7 +649,7 @@ Cursor movement Commands
 \item \url{http://www.kcomputing.com/vi.html}
 \end{itemize}
 
-List of Commands 
+List of Commands
 \begin{itemize}
 \item \url{http://www.smashingmagazine.com/2010/05/03/vi-editor-linux-terminal-cheat-sheet-pdf/}
 \end{itemize}
@@ -783,7 +783,7 @@ Delete a word, line, and sentence
 
 \bigskip
 \begin{block}{When in Doubt}
-Use ``\textsc{Get me out of here}'' command \keystrokered{Ctrl}-\keystrokered{g} 
+Use ``\textsc{Get me out of here}'' command \keystrokered{Ctrl}-\keystrokered{g}
 \end{block}
 \end{frame}
 
@@ -793,7 +793,7 @@ Use ``\textsc{Get me out of here}'' command \keystrokered{Ctrl}-\keystrokered{g}
 \begin{itemize}
 \item \keystroke{Ctrl}-\keystroke{s} to search next pattern
 \item \keystroke{Ctrl}-\keystroke{r} to search previous pattern
-\item Regular expressions can be also used in searching with \keystroke{Meta}-\keystroke{s} 
+\item Regular expressions can be also used in searching with \keystroke{Meta}-\keystroke{s}
 \end{itemize}
 
 \end{frame}
@@ -801,7 +801,7 @@ Use ``\textsc{Get me out of here}'' command \keystrokered{Ctrl}-\keystrokered{g}
 \begin{frame}[t]{Substitution}
 \keystroke{Meta}-\keystroke{$\%$} to replace or \keystroke{Meta}-\texttt{replace-string}
 \begin{itemize}
-\item Requests for search pattern; press enter for substituting pattern 
+\item Requests for search pattern; press enter for substituting pattern
 \item Replacing the substituting pattern this once \keystroke{SPC}
 \item Skipping to the next without replcacing \keystroke{DEL}
 \item Replace all remaining matches \keystroke{!}
@@ -812,7 +812,7 @@ Use ``\textsc{Get me out of here}'' command \keystrokered{Ctrl}-\keystrokered{g}
 
 
 \begin{frame}[t]{Undo and Redo}
-Undo an unwanted change is done by \keystroke{Ctrl}-\keystroke{\_}  
+Undo an unwanted change is done by \keystroke{Ctrl}-\keystroke{\_}
 \bigskip
 Redo is reverse of undo, undo direction is reversed by \keystroke{Ctrl}-\keystroke{g} and \keystroke{Ctrl}-\keystroke{\_}
 
@@ -825,7 +825,7 @@ Macros are useful for repeatable key sequences that may be include commands.
 \bigskip
 Common macro commands
 \begin{itemize}
-\item \keystroke{Ctrl}-\keystroke{x} - \keystroke{(}– begin macro definition (after this, type whatever actions you would like repeated and stored)       
+\item \keystroke{Ctrl}-\keystroke{x} - \keystroke{(}– begin macro definition (after this, type whatever actions you would like repeated and stored)
 \item \keystroke{Ctrl}-\keystroke{x} - \keystroke{)}– end macro definition
 \item \keystroke{Ctrl}-\keystroke{x} - \keystroke{e} – execute stored macro
 \item \keystroke{Ctrl}-\keystroke{u5}  \keystroke{Ctrl}-\keystroke{e} – execute stored macro 5 times (Note: \keystroke{Ctrl}-\keystroke{u5} can prefix any emacs cmd, even a non-cmd)
@@ -844,7 +844,7 @@ This will produce following and goes back to command prompt
 
 \begin{beamercolorbox}[wd=\linewidth]{boxsthlmLightPurple}
 \begin{sthlmLatex}
-This is how we write 
+This is how we write
 and copy lines
 This is how we write and copy lines
 END
@@ -877,8 +877,8 @@ Explaining the commands in the tutorial
 \keystroke{Ctrl}-\keystroke{u3} Repeat command with following number \hfill
 \keystroke{Meta}-\keystroke{f} Move to next word \hfill
 \keystroke{Ctrl}-\keystroke{d} Delete a character \hfill
-\keystroke{Ctrl}-\keystroke{x-s} Save the document 
-\keystroke{Ctrl}-\keystroke{x-c} Quit 
+\keystroke{Ctrl}-\keystroke{x-s} Save the document
+\keystroke{Ctrl}-\keystroke{x-c} Quit
 }
 \end{frame}
 
@@ -899,7 +899,7 @@ Complete all tasks with minimum number of retyping, but with commands
 
 
 \end{frame}
-
+\begin{comment}
 \begin{frame}[t]{emacs Configurations}
 Place \texttt{.emacs} to your home direcotry
 
@@ -908,7 +908,7 @@ Have a look at the sample file
 
 \url{https://github.com/resourceful/lecture_sysprog/blob/master/01-intro/misc/.emacs}
 \end{frame}
-
+\end{comment}
 
 \begin{frame}[t]{References}
 Reference card with most commands you’ll ever need
@@ -931,13 +931,13 @@ An emacs HowTo
 \includegraphics[width=0.6\textwidth]{./figure/learning_curve.png}
 \end{frame}
 
-
+\begin{comment}
 \begin{frame}[t]{Homework}
 \begin{itemize}
 \item Read up to chapter 3 File I/O --- There will be a pop quiz on chapter 3
-\item Download source code for F2FS file system in advance, we will going to learn how to use ctag 
+\item Download source code for F2FS file system in advance, we will going to learn how to use ctag
 \end{itemize}
 \end{frame}
-
+\end{comment}
 
 \end{document}

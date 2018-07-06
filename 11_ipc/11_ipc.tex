@@ -1,6 +1,6 @@
-% Author: Seongjin Lee 
-% Hanyang University, Seoul, Korea 
-% esos.hanyang.ac.kr 
+% Author: Seongjin Lee
+% Hanyang University, Seoul, Korea
+% esos.hanyang.ac.kr
 % 2016-09-20
 % note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
 % https://github.com/resourceful/lecture_sysprog/
@@ -9,9 +9,9 @@
 \usepackage{kotex}
 %\usetheme{sthlm}
 \usepackage{../beamer_template/beamerthemesthlm}
-\hypersetup{pdfauthor={Seongjin Lee (insight@hanyang.ac.kr)},
+\hypersetup{pdfauthor={Seongjin Lee (insight@gnu.ac.kr)},
             pdfsubject={Lecture Note: System Programming},
-            pdfkeywords={Lecture Note, System Programming, class, undergraduate},
+            pdfkeywords={Lecture Note, System Programming, class, (under)graduate},
             pdfmoddate={D: \pdfdate},
             pdfcreator={Seongjin Lee}}
 
@@ -25,16 +25,16 @@
 \title{System Programming}
 \subtitle{Week 14: Interprocess Commnunication}
 \author[SJL]{Seongjin Lee}
-\institute{\href{mailto:insight@hanyang.ac.kr}{insight@hanyang.ac.kr}\\\url{http://esos.hanyang.ac.kr}\\Esos Lab. Hanyang University}
-\date{2016-12-07} 
+\institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
+\date{\today}
 
 \begin{document}
 
 
 
-\frame[plain]{\titlepage} 
+\frame[plain]{\titlepage}
 
-\frame[t]{\frametitle{Table of contents}\tableofcontents} 
+\frame[t]{\frametitle{Table of contents}\tableofcontents}
 
 
 %---------------------------------------------------------
@@ -60,7 +60,7 @@ This chapter covers other techniques for processes to communicate with one anoth
 
 \begin{frame}[t, fragile]
   \frametitle{Pipes}
-Pipes are the oldest form of \textsc{Unix} system IPC 
+Pipes are the oldest form of \textsc{Unix} system IPC
 
 Pipes have two limitations
 \begin{enumerate}
@@ -76,7 +76,7 @@ Pipes have two limitations
 \begin{codedef}
 #include <unistd.h>
 int pipe(int fd[2]);
-// Returns: 0 if OK, −1 on error 
+// Returns: 0 if OK, −1 on error
 \end{codedef}
 Two file descriptors are returned through the fd argument:
 \begin{itemize}
@@ -104,7 +104,7 @@ Two file descriptors are returned through the fd argument:
 
 \begin{frame}[t]
   \frametitle{Pipes}
-Normally, the process that calls pipe then calls fork, creating an IPC channel from the parent to the child, or vice versa. 
+Normally, the process that calls pipe then calls fork, creating an IPC channel from the parent to the child, or vice versa.
   \begin{figure}[h]
     \centering
    \only<1>{ \includegraphics[width=0.8\textwidth]{./figures/fig15_3-halfduplex.png}
@@ -126,16 +126,16 @@ When one end of a pipe is closed, two rules apply
 \item If we write to a pipe whose read end has been closed, the signal SIGPIPE is generated.
 \end{enumerate}
 
-When we’re writing to a pipe (or FIFO), the constant \texttt{PIPE\_BUF} specifies the kernel’s pipe buffer size. 
+When we’re writing to a pipe (or FIFO), the constant \texttt{PIPE\_BUF} specifies the kernel’s pipe buffer size.
 \end{frame}
 
 
 
 \begin{frame}[t, fragile, allowframebreaks]
   \frametitle{Pipes Example: \texttt{codes/pipe1.c}}
-In this example, we call \texttt{read} and \texttt{write} directly on the pipe descriptors. 
+In this example, we call \texttt{read} and \texttt{write} directly on the pipe descriptors.
 
-\lstinputlisting[lineskip=0pt]{codes/pipe1.c}  
+\lstinputlisting[lineskip=0pt]{codes/pipe1.c}
 \end{frame}
 
 
@@ -154,7 +154,7 @@ In this example, we call \texttt{read} and \texttt{write} directly on the pipe d
   \end{itemize}
 
 
-\lstinputlisting[lineskip=0pt]{codes/pipe2.c}  
+\lstinputlisting[lineskip=0pt]{codes/pipe2.c}
 
 \begin{block}{Defensive programming measure}
 Whenever we call dup2 and close to duplicate one descriptor onto another, we’ll always compare the descriptors first.
@@ -216,7 +216,7 @@ redo of the program using \texttt{popen}: \texttt{codes/popen2.c}
 The shell command \texttt{\$\{PAGER:-more\}} says to use the value of the shell variable
 \texttt{PAGER} if it is defined and non-null; otherwise, use the string more.
 
-\lstinputlisting[lineskip=0pt]{codes/popen2.c}  
+\lstinputlisting[lineskip=0pt]{codes/popen2.c}
 \end{frame}
 
 
@@ -225,7 +225,7 @@ The shell command \texttt{\$\{PAGER:-more\}} says to use the value of the shell 
   \frametitle{\texttt{popen} and \texttt{pclose} Example}
 \texttt{codes/myuclc.c} : a filter program that changes upper cases to lower cases.
 
-\lstinputlisting[lineskip=-2pt]{codes/myuclc.c}  
+\lstinputlisting[lineskip=-2pt]{codes/myuclc.c}
 \end{frame}
 
 
@@ -234,7 +234,7 @@ The shell command \texttt{\$\{PAGER:-more\}} says to use the value of the shell 
   \frametitle{\texttt{popen} and \texttt{pclose} Example}
 \texttt{codes/popen1.c}
 
-\lstinputlisting[lineskip=0pt]{codes/popen1.c}  
+\lstinputlisting[lineskip=0pt]{codes/popen1.c}
 \end{frame}
 
 
@@ -243,7 +243,7 @@ The shell command \texttt{\$\{PAGER:-more\}} says to use the value of the shell 
 
 \begin{frame}[t]
   \frametitle{Coprocesses}
-A \textsc{Unix} system filter is a program that reads from standard input and writes to standard output. 
+A \textsc{Unix} system filter is a program that reads from standard input and writes to standard output.
 
 Filters are normally connected linearly in shell pipelines.
 
@@ -266,15 +266,15 @@ A simple coprocess that reads two numbers from its standard input, computes thei
 
 \texttt{codes/add2.c; make add2}
 
-\lstinputlisting[lineskip=-3pt]{codes/add2.c}  
+\lstinputlisting[lineskip=-3pt]{codes/add2.c}
 
 \bigskip
 
-Here, we create two pipes, with the parent and the child closing the ends they don’t need. 
+Here, we create two pipes, with the parent and the child closing the ends they don’t need.
 
 \newpage
 \texttt{codes/pipe4.c; make pipe4}
-\lstinputlisting[lineskip=-3pt]{codes/pipe4.c}  
+\lstinputlisting[lineskip=-3pt]{codes/pipe4.c}
 
 \newpage
 If we \texttt{kill} the \texttt{add2} coprocess while the program is waiting for our input and then enter two numbers, the signal handler is invoked when the program writes to the pipe that has no reader.
@@ -374,7 +374,7 @@ There are two uses for FIFO
 \begin{frame}[t]
   \frametitle{Example - Using FIFOs to Duplicate Output Streams}
 
-FIFOs can be used to duplicate an output stream in a series of shell commands. 
+FIFOs can be used to duplicate an output stream in a series of shell commands.
 
 A FIFO has a name, so it can be used for nonlinear connections.
   \begin{figure}[h]
@@ -423,17 +423,17 @@ prog1 < infile | tee fifo1 | prog2
 
 \texttt{make create\_fifo} to create a FIFO for server and client
 
-\lstinputlisting[lineskip=0pt]{codes/create_fifo.c}  
+\lstinputlisting[lineskip=0pt]{codes/create_fifo.c}
 
 \newpage
 \bigskip
 \texttt{codes/server.c}
-\lstinputlisting[lineskip=-3pt]{codes/server.c}  
+\lstinputlisting[lineskip=-3pt]{codes/server.c}
 
 \newpage
 \bigskip
 \texttt{codes/client.c}
-\lstinputlisting[lineskip=-3pt]{codes/client.c}  
+\lstinputlisting[lineskip=-3pt]{codes/client.c}
 \end{frame}
 
 \section{XSI IPC}
@@ -545,7 +545,7 @@ Difference between object identifiers and \texttt{fd}s
 
 \begin{frame}[t]
   \frametitle{Advantages and Disadvantages}
-Fundamental problem with XSI IPC: 
+Fundamental problem with XSI IPC:
   \begin{enumerate}
   \item IPC structures are systemwide and do not have a reference count
 {\footnotesize
@@ -577,18 +577,18 @@ Fundamental problem with XSI IPC:
 
 By ``connectionless,'' we mean the ability to send a message without having to call some form of an open function first
 
-``Flow control'' means that the sender is put to sleep if there is a shortage of system resources (buffers) or if the receiver can’t accept any more messages. 
+``Flow control'' means that the sender is put to sleep if there is a shortage of system resources (buffers) or if the receiver can’t accept any more messages.
 \end{frame}
 
 
 \subsection{XSI Message Queues}
 \begin{frame}[t]
   \frametitle{Message Queues}
-A message queue is a linked list of messages stored within the kernel and identified by a message queue identifier. 
+A message queue is a linked list of messages stored within the kernel and identified by a message queue identifier.
 \begin{itemize}
 \item A new queue is created or an existing queue opened by \texttt{msgget}.
 \item New messages are added to the end of a queue by \texttt{msgsnd}.
-\item Messages are fetched from a queue by \texttt{msgrcv}. 
+\item Messages are fetched from a queue by \texttt{msgrcv}.
 \item We don’t have to fetch the messages in a first-in, first-out order. Instead, we can fetch messages based on their type field.
 \end{itemize}
 \end{frame}
@@ -607,7 +607,7 @@ struct msqid_ds {
   time_t           msg_stime;  /* last-msgsnd() time */
   time_t           msg_rtime;  /* last-msgrcv() time */
   time_t           msg_ctime;  /* last-change time */
-. };  
+. };
 \end{codedefnb}
 \end{frame}
 
@@ -624,7 +624,7 @@ int msgget(key_t key, int flag);
 \end{codedef}
 {\footnotesize
 \begin{itemize}
-\item The \texttt{ipc\_perm} structure is initialized as described in Section 15.6.2. The \texttt{mode} member of this structure is set to the corresponding permission bits of \texttt{flag}. 
+\item The \texttt{ipc\_perm} structure is initialized as described in Section 15.6.2. The \texttt{mode} member of this structure is set to the corresponding permission bits of \texttt{flag}.
 \item  \texttt{msg\_qnum}, \texttt{msg\_lspid}, \texttt{msg\_lrpid}, \texttt{msg\_stime}, and \texttt{msg\_rtime} are all set to 0.
 \item \texttt{msg\_ctime} is set to the current time.
 \item \texttt{msg\_qbytes} is set to the system limit.
@@ -647,7 +647,7 @@ int msgctl(int msqid, int cmd, struct msqid_ds *buf );
 \texttt{cmd} specifies the command to be performed on the queue specified by \textit{msqid}
 \begin{itemize}
 \item \texttt{IPC\_STAT}: Fetch the \texttt{msqid\_ds} structure for this queue, storing it in the structure pointed to by \texttt{buf}.
-\item \texttt{IPC\_SET}:  Copy the \texttt{msg\_perm.uid}, \texttt{msg\_perm.gid}, \texttt{msg\_perm.mode}, and \texttt{msg\_qbytes} fields from the structure pointed to by buf to the \texttt{msqid\_ds} structure associated with this queue. 
+\item \texttt{IPC\_SET}:  Copy the \texttt{msg\_perm.uid}, \texttt{msg\_perm.gid}, \texttt{msg\_perm.mode}, and \texttt{msg\_qbytes} fields from the structure pointed to by buf to the \texttt{msqid\_ds} structure associated with this queue.
 \item \texttt{IPC\_RMID}: Remove the message queue from the system and any data still on the queue. This removal is immediate. Any other process still using the message queue will get an error of \texttt{EIDRM} on its next attempted operation on the queue.
 \end{itemize}
 }
@@ -713,7 +713,7 @@ Messages are retrieved from a queue by \texttt{msgrcv}.
 \begin{codedef}
 #include <sys/msg.h>
 ssize_t msgrcv(int msqid, void *ptr, size_t nbytes, long type, int flag);
-// Returns: size of data portion of message if OK, −1 on error  
+// Returns: size of data portion of message if OK, −1 on error
 \end{codedef}
 
 \begin{uncoverenv}<1>
@@ -759,12 +759,12 @@ When \texttt{msgrcv} succeeds, the kernel updates the \texttt{msqid\_ds} structu
   \frametitle{Message Queue Example}
 \bigskip
 \texttt{codes/msg\_send.c}
-\lstinputlisting[lineskip=-3pt]{codes/msg_send.c}  
+\lstinputlisting[lineskip=-3pt]{codes/msg_send.c}
 
 \newpage
 \bigskip
 \texttt{codes/msg\_receive.c}
-\lstinputlisting[lineskip=-3pt]{codes/msg_receive.c}  
+\lstinputlisting[lineskip=-3pt]{codes/msg_receive.c}
 \end{frame}
 
 \subsection{XSI Semaphore}
@@ -794,7 +794,7 @@ XSI semaphores are more complicated than this. Three features contribute to this
 \begin{enumerate}
 \item A semaphore is defined as a set of one or more semaphore values. When we create a semaphore, we specify the number of values in the set.
 \item The creation of a semaphore (\texttt{semget}) is independent of its initialization (\texttt{semctl}).  We cannot atomically create a new semaphore set and initialize all the values in the set.
-\item Since all forms of XSI IPC remain in existence even when no process is using them, we have to worry about a program that terminates without releasing the semaphores it has been allocated. 
+\item Since all forms of XSI IPC remain in existence even when no process is using them, we have to worry about a program that terminates without releasing the semaphores it has been allocated.
 \end{enumerate}
 \end{frame}
 
@@ -806,13 +806,13 @@ The kernel maintains a \texttt{semid\_ds} structure for each semaphore set:
 \begin{codedefnb}
 struct semid_ds {
      struct ipc_perm  sem_perm;  /* see Section 15.6.2 */
-     unsigned short   sem_nsems; /* # of semaphores in set */ 
+     unsigned short   sem_nsems; /* # of semaphores in set */
      time_t           sem_otime; /* last-semop() time */
      time_t           sem_ctime; /* last-change time */
      .
      .
      .
-};  
+};
 \end{codedefnb}
 \end{frame}
 
@@ -868,15 +868,15 @@ The \texttt{semctl} function is the catchall for various semaphore operations.
 \begin{codedef}
 #include <sys/sem.h>
 int semctl(int semid, int semnum, int cmd, ... /* union semun arg */ );
-// Returns: (see following)  
+// Returns: (see following)
 \end{codedef}
 
 The fourth argument is optional, depending on the command requested, and if present, is of type \texttt{semun}, a union of various command-specific arguments:
 
 \begin{codedefnb}
-union semun { 
-    int             val;           /* for SETVAL */ 
-    struct          semid_ds *buf; /* for IPC_STAT and IPC_SET */ 
+union semun {
+    int             val;           /* for SETVAL */
+    struct          semid_ds *buf; /* for IPC_STAT and IPC_SET */
     unsigned short *array;         /* for GETALL and SETALL */ };
 \end{codedefnb}
 
@@ -890,8 +890,8 @@ The \textit{cmd} argument specifies one of the following ten commands to be perf
 {\scriptsize
 \begin{itemize}
 \item \texttt{IPC\_STAT}: Fetch the \texttt{semid\_ds} structure for this set, storing it in the structure pointed to by \textit{arg.buf}.
-\item \texttt{IPC\_SET}: Set the \texttt{sem\_perm.uid}, \texttt{sem\_perm.gid}, and \texttt{sem\_perm.mode} fields from the structure pointed to by \texttt{arg.buf} in the \texttt{semid\_ds} structure associated with this set. 
-\item \texttt{IPC\_RMID}: Remove the semaphore set from the system. This removal is immediate. Any other process still using the semaphore will get an error of \texttt{EIDRM} on its next attempted operation on the semaphore. 
+\item \texttt{IPC\_SET}: Set the \texttt{sem\_perm.uid}, \texttt{sem\_perm.gid}, and \texttt{sem\_perm.mode} fields from the structure pointed to by \texttt{arg.buf} in the \texttt{semid\_ds} structure associated with this set.
+\item \texttt{IPC\_RMID}: Remove the semaphore set from the system. This removal is immediate. Any other process still using the semaphore will get an error of \texttt{EIDRM} on its next attempted operation on the semaphore.
 \item \texttt{GETVAL}: Return the value of \texttt{semval} for the member \textit{semnum}.
 \item \texttt{SETVAL}: Set the value of \texttt{semval} for the member \textit{semnum}. The value is specified by \textit{arg.val}.
 \item \texttt{GETPID}: Return the value of \texttt{sempid} for the member \textit{semnum}.
@@ -907,7 +907,7 @@ The \textit{cmd} argument specifies one of the following ten commands to be perf
 
 \begin{frame}[t, fragile]
   \frametitle{XSI Shared Memory}
-Shared memory allows two or more processes to share a given region of memory. This is the fastest form of IPC, because the data does not need to be copied between the client and the server. 
+Shared memory allows two or more processes to share a given region of memory. This is the fastest form of IPC, because the data does not need to be copied between the client and the server.
 
 The kernel maintains a structure with at least the following members for each shared memory segment:
 \begin{codedefnb}
@@ -936,7 +936,7 @@ int shmget(key_t key, size_t size, int flag);
 // Returns: shared memory ID if OK, −1 on error
 \end{codedef}
 \begin{itemize}
-\item The \texttt{ipc\_perm} structure is initialized as described in Section 15.6.2. The mode member of this structure is set to the corresponding permission bits of flag. 
+\item The \texttt{ipc\_perm} structure is initialized as described in Section 15.6.2. The mode member of this structure is set to the corresponding permission bits of flag.
 \item \texttt{shm\_lpid}, \texttt{shm\_nattch}, \texttt{shm\_atime}, and \texttt{shm\_dtime} are all set to \texttt{0}.
 \item \texttt{shm\_ctime} is set to the current time.
 \item \texttt{shm\_segsz} is set to the \textit{size} requested
@@ -958,8 +958,8 @@ The \textit{cmd} argument specifies one of the following five commands to be per
 {\footnotesize
 \begin{itemize}
 \item \texttt{IPC\_STAT}: Fetch the \texttt{shmid\_ds} structure for this segment, storing it in the structure pointed to by \textit{buf}.
-\item \texttt{IPC\_SET}: Set the following three fields from the structure pointed to by \textit{buf} in the \texttt{shmid\_ds} structure associated with this shared memory segment: \texttt{shm\_perm.uid}, \texttt{shm\_perm.gid}, and \texttt{shm\_perm.mode}. 
-\item \texttt{IPC\_RMID}: Remove the shared memory segment set from the system. Since an attachment count is maintained for shared memory segments (the \texttt{shm\_nattch} field in the \texttt{shmid\_ds} structure), the segment is not removed until the last process using the segment terminates or detaches it. Regardless of whether the segment is still in use, the segment’s identifier is immediately removed so that shmat can no longer attach the segment. 
+\item \texttt{IPC\_SET}: Set the following three fields from the structure pointed to by \textit{buf} in the \texttt{shmid\_ds} structure associated with this shared memory segment: \texttt{shm\_perm.uid}, \texttt{shm\_perm.gid}, and \texttt{shm\_perm.mode}.
+\item \texttt{IPC\_RMID}: Remove the shared memory segment set from the system. Since an attachment count is maintained for shared memory segments (the \texttt{shm\_nattch} field in the \texttt{shmid\_ds} structure), the segment is not removed until the last process using the segment terminates or detaches it. Regardless of whether the segment is still in use, the segment’s identifier is immediately removed so that shmat can no longer attach the segment.
 \end{itemize}
 }
 \end{frame}
@@ -979,7 +979,7 @@ The address in the calling process at which the segment is attached depends on t
 \begin{itemize}
 \item  If \textit{addr} is \texttt{0}, the segment is attached at the first available address selected by the kernel. \textbf{This is the recommended technique.}
 \item If \textit{addr} is nonzero and \texttt{SHM\_RND} is not specified, the segment is attached at the address given by \textit{addr}.
-\item If \textit{addr} is nonzero and \texttt{SHM\_RND} is specified, the segment is attached at the address given by (\textit{addr}-(\textit{addr} modulus SHMLBA)). 
+\item If \textit{addr} is nonzero and \texttt{SHM\_RND} is specified, the segment is attached at the address given by (\textit{addr}-(\textit{addr} modulus SHMLBA)).
 
 \end{itemize}
 }
@@ -1002,7 +1002,7 @@ The \textit{addr} argument is the value that was returned by a previous call to 
 
 \begin{frame}[fragile,t, allowframebreaks]
   \frametitle{Shared Memory Example: \texttt{codes/tshm.c}}
-\lstinputlisting[lineskip=-3pt]{codes/tshm.c}  
+\lstinputlisting[lineskip=-3pt]{codes/tshm.c}
 \begin{verbatim}
 $ ./tshm
 array[] from 0x1085d3050 to 0x1085dcc90
@@ -1028,15 +1028,15 @@ shared memory attached from 0x108611000 to 0x1086296a0
 \begin{frame}[t,fragile, allowframebreaks]
   \frametitle{Shared Memory Example: Server - Client}
 \texttt{codes/shm\_send.c}
-\lstinputlisting[lineskip=-3pt]{codes/shm_send.c} 
+\lstinputlisting[lineskip=-3pt]{codes/shm_send.c}
 
 \newpage
 \texttt{codes/shm\_receive.c}
-\lstinputlisting[lineskip=-3pt]{codes/shm_receive.c}  
+\lstinputlisting[lineskip=-3pt]{codes/shm_receive.c}
 \end{frame}
 
 
-
+\begin{comment}
 %---------------------------------------------------------
 
 \section{Last Words}
@@ -1049,6 +1049,6 @@ shared memory attached from 0x108611000 to 0x1086296a0
 \end{itemize}
 \end{frame}
 
-
+\end{comment}
 
 \end{document}

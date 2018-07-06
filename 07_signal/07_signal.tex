@@ -1,6 +1,6 @@
-% Author: Seongjin Lee 
-% Hanyang University, Seoul, Korea 
-% esos.hanyang.ac.kr 
+% Author: Seongjin Lee
+% Hanyang University, Seoul, Korea
+% esos.hanyang.ac.kr
 % 2016-09-20
 % note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
 % https://github.com/resourceful/lecture_sysprog/
@@ -9,9 +9,9 @@
 \usepackage{kotex}
 %\usetheme{sthlm}
 \usepackage{../beamer_template/beamerthemesthlm}
-\hypersetup{pdfauthor={Seongjin Lee (insight@hanyang.ac.kr)},
+\hypersetup{pdfauthor={Seongjin Lee (insight@gnu.ac.kr)},
             pdfsubject={Lecture Note: System Programming},
-            pdfkeywords={Lecture Note, System Programming, class, undergraduate},
+            pdfkeywords={Lecture Note, System Programming, class, (under)graduate},
             pdfmoddate={D: \pdfdate},
             pdfcreator={Seongjin Lee}}
 
@@ -25,16 +25,16 @@
 \title{System Programming}
 \subtitle{Week 7: Signals}
 \author[SJL]{Seongjin Lee}
-\institute{\href{mailto:insight@hanyang.ac.kr}{insight@hanyang.ac.kr}\\\url{http://esos.hanyang.ac.kr}\\Esos Lab. Hanyang University}
-\date{2016-11-09} 
+\institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
+\date{\today}
 
 \begin{document}
 
 
 
-\frame[plain]{\titlepage} 
+\frame[plain]{\titlepage}
 
-\frame[t]{\frametitle{Table of contents}\tableofcontents} 
+\frame[t]{\frametitle{Table of contents}\tableofcontents}
 
 
 %---------------------------------------------------------
@@ -96,7 +96,7 @@ The process has to tell the kernel ``if and when this signal occurs, do the foll
 
 \uncover<2->{We can tell the kernel to do one of three things}
 \begin{enumerate}
-\item <2-> \textbf{Ignore the signal} following two can never be ignored: \texttt{SIGKILL} and \texttt{SIGSTOP} 
+\item <2-> \textbf{Ignore the signal} following two can never be ignored: \texttt{SIGKILL} and \texttt{SIGSTOP}
 \item <3-> \textbf{Catch the signal} We tell the kernel to call a customized function whenever the signal occurs
   \begin{itemize}
   \item <3-> if \texttt{SIGCHLD} signal is caught, it means child has terminated
@@ -104,7 +104,7 @@ The process has to tell the kernel ``if and when this signal occurs, do the foll
   \end{itemize}
 \item <4-> \textbf{Use default action} every signal has a default action
   \begin{itemize}
-  \item <4-> the default action for most signals is to terminate the process> 
+  \item <4-> the default action for most signals is to terminate the process>
   \end{itemize}
 \end{enumerate}
 
@@ -144,8 +144,8 @@ The process has to tell the kernel ``if and when this signal occurs, do the foll
 \begin{frame}[fragile,t]
   \frametitle{\texttt{signal} Function}
 \begin{codedef}
-#include <signal.h> 
-void (*signal(int signo, void (*func)(int)))(int); 
+#include <signal.h>
+void (*signal(int signo, void (*func)(int)))(int);
 // Returns: previous disposition of signal (see following) if OK, SIG_ERR on error
 \end{codedef}
 
@@ -181,7 +181,7 @@ received SIGUSR2
 James@maker:codes$ kill -HUP 4987
 received SIGHUP
 James@maker:codes$ kill -INT 4987
-[2]+  Interrupt: 2            ./usr\_sig 
+[2]+  Interrupt: 2            ./usr\_sig
 James@maker:codes$
 \end{codedefnb}
 \end{frame}
@@ -202,7 +202,7 @@ $ ps aux | grep sleep
 $ sleep 100 &
 [ 1 ]  3490
 $ kill 3490  # kills pid 3490 gracefully
-$ 
+$
 [ 1 ]+ Terminated: 15    sleep 100
 
 $ sleep 100 &
@@ -214,7 +214,7 @@ $ kill -s STOP 3637
 $ kill –s CONT 3637
 [ 1 ]+ 3637 suspended (signal): 17 sleep 100
 \end{verbatim}
-}  
+}
 \end{column}
 \begin{column}{0.5\linewidth}
 {\scriptsize
@@ -226,7 +226,7 @@ Or
 $ kill –s KILL 3490
 Or
 $ kill –SIGKILL 3490
-Or 
+Or
 $ kill –KILL 3490
 Or
 $ kill –s 9 3490
@@ -234,7 +234,7 @@ Or
 $ kill -9 3490
 [ 1 ]+ Killed: 15    sleep 100
 \end{verbatim}
-} 
+}
 \end{column}
 \end{columns}
 
@@ -325,7 +325,7 @@ Reentrant fuctions are guarnateed to be safe to call from within a signal hanlde
 \end{frame}
 
 \begin{frame}
-  \frametitle{Reentrant Functions cont'd}  
+  \frametitle{Reentrant Functions cont'd}
   \begin{figure}[h]
     \centering
     \includegraphics[height=0.87\textheight]{figure/fig10-4_reentrant.png}
@@ -373,7 +373,7 @@ Reentrant fuctions are guarnateed to be safe to call from within a signal hanlde
 
 \end{itemize}
 
-  
+
 \end{frame}
 
 
@@ -391,7 +391,7 @@ Reentrant fuctions are guarnateed to be safe to call from within a signal hanlde
 
 \begin{codedef}
 #include <signal.h>
-int kill(pid_t pid, int signo); 
+int kill(pid_t pid, int signo);
 int raise(int signo);
 // Both return: 0 if OK, −1 on error
 \end{codedef}
@@ -414,7 +414,7 @@ int raise(int signo);
 \begin{codedef}
 #include <unistd.h>
 unsigned int alarm(unsigned int seconds);
-// Returns: 0 or number of seconds until previously set alarm  
+// Returns: 0 or number of seconds until previously set alarm
 \end{codedef}
 
 \begin{itemize}
@@ -537,9 +537,9 @@ We need a data type to represent multiple signals---\textit{signal set}
 #include <signal.h>
 int sigemptyset(sigset_t *set);
 int sigfillset(sigset_t *set);
-int sigaddset(sigset_t *set, int signo); 
+int sigaddset(sigset_t *set, int signo);
 int sigdelset(sigset_t *set, int signo);
-// All four return: 0 if OK, −1 on error 
+// All four return: 0 if OK, −1 on error
 int sigismember(const sigset_t *set, int signo);
 // Returns: 1 if true, 0 if false, −1 on error
 \end{codedef}
@@ -577,16 +577,16 @@ A process can \textit{examine} its signal mask, \textit{change} its signal mask,
 
 \begin{codedef}
 #include <signal.h>
-int sigprocmask(int how, const sigset_t *restrict set, 
+int sigprocmask(int how, const sigset_t *restrict set,
                 sigset_t *restrict oset);
-// Returns: 0 if OK, −1 on erro    
+// Returns: 0 if OK, −1 on erro
 \end{codedef}
 
 \begin{table}[h]
   \centering
   \begin{tabular}{l | p{8cm}}
-    \texttt{SIG\_BLOCK} & \textit{set} contains the additional signal that we want to block \\ 
-    \texttt{SIG\_UNBLOCK} & \textit{set} contains the additional signal that we want to unblock \\ 
+    \texttt{SIG\_BLOCK} & \textit{set} contains the additional signal that we want to block \\
+    \texttt{SIG\_UNBLOCK} & \textit{set} contains the additional signal that we want to unblock \\
     \texttt{SIG\_SETMASK} & the new signal mask for the process is replaced by the value of the signal set pointed to by \textit{set}
   \end{tabular}
   \caption{ways to change the current signal mask using \texttt{sigprocmask}}
@@ -626,7 +626,7 @@ the set of signals is returned through the set argument
 \begin{codedef}
 #include <signal.h>
 int sigpending(sigset_t *set);
-// Returns: 0 if OK, −1 on error  
+// Returns: 0 if OK, −1 on error
 \end{codedef}
 \end{frame}
 
@@ -662,7 +662,7 @@ caught SIGQUIT
 SIGQUIT unblocked
 C-\ to generate SIGQUIT signal again
 ^\Quit: 3
-\end{verbatim} 
+\end{verbatim}
 }
 \end{column}
 \begin{column}{0.5\linewidth}
@@ -684,7 +684,7 @@ James@maker:codes$
 
 
 
-  
+
 \end{frame}
 
 
@@ -695,7 +695,7 @@ James@maker:codes$
 #include <signal.h>
 int sigaction(int signo, const struct sigaction *restrict act,
               struct sigaction *restrict oact);
-// Returns: 0 if OK, −1 on error  
+// Returns: 0 if OK, −1 on error
 \end{codedef}
 
 \begin{itemize}
@@ -748,7 +748,7 @@ struct sigaction {
 \begin{codedef}
 #include <stdlib.h>
 void abort(void);
-// This function never returns  
+// This function never returns
 \end{codedef}
 
 This function sends the \texttt{SIGABRT} signal to the caller
@@ -758,7 +758,7 @@ The intent of letting the process catch the \texttt{SIGABTRT} is to allow it to 
 \end{frame}
 
 
-
+\begin{comment}
 %---------------------------------------------------------
 \section{Last Words}
 
@@ -772,16 +772,16 @@ The intent of letting the process catch the \texttt{SIGABTRT} is to allow it to 
 
 
 
-\begin{comment}
+
 \begin{frame}[fragile,t]
   \frametitle{\texttt{segsetjmp} and \texttt{siglongjmp} Functions}
-  
+
 \end{frame}
 
 
 \begin{frame}[fragile,t]
   \frametitle{\texttt{sigsuspend} Function}
-  
+
 \end{frame}
 
 
@@ -789,32 +789,32 @@ The intent of letting the process catch the \texttt{SIGABTRT} is to allow it to 
 
 \begin{frame}[fragile,t]
   \frametitle{\texttt{system} Function}
-  
+
 \end{frame}
 
 
 \begin{frame}[fragile,t]
   \frametitle{\texttt{sleep}, \texttt{nanosleep},  and \texttt{clock\_nanosleep} Functions}
-  
+
 \end{frame}
 
 
 \begin{frame}[fragile,t]
   \frametitle{\texttt{sigqueue} Function}
-  
+
 \end{frame}
 
 
 \begin{frame}[fragile,t]
   \frametitle{Job-Control Signals}
-  
+
 \end{frame}
 
 
 
 \begin{frame}[fragile,t]
   \frametitle{Signal Names and Numbers}
-  
+
 \end{frame}
 \end{comment}
 

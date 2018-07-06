@@ -1,6 +1,6 @@
-% Author: Seongjin Lee 
-% Hanyang University, Seoul, Korea 
-% esos.hanyang.ac.kr 
+% Author: Seongjin Lee
+% Hanyang University, Seoul, Korea
+% esos.hanyang.ac.kr
 % 2016-09-20
 % note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
 % https://github.com/resourceful/lecture_sysprog/
@@ -9,9 +9,9 @@
 \usepackage{kotex}
 %\usetheme{sthlm}
 \usepackage{../beamer_template/beamerthemesthlm}
-\hypersetup{pdfauthor={Seongjin Lee (insight@hanyang.ac.kr)},
+\hypersetup{pdfauthor={Seongjin Lee (insight@gnu.ac.kr)},
             pdfsubject={Lecture Note: System Programming},
-            pdfkeywords={Lecture Note, System Programming, class, undergraduate},
+            pdfkeywords={Lecture Note, System Programming, class, (under)graduate},
             pdfmoddate={D: \pdfdate},
             pdfcreator={Seongjin Lee}}
 
@@ -25,16 +25,16 @@
 \title{System Programming}
 \subtitle{Week 5: System Data Files and Process Environment}
 \author[SJL]{Seongjin Lee}
-\institute{\href{mailto:insight@hanyang.ac.kr}{insight@hanyang.ac.kr}\\\url{http://esos.hanyang.ac.kr}\\Esos Lab. Hanyang University}
-\date{2016-10-05} 
+\institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
+\date{\today}
 
 \begin{document}
 
 
 
-\frame[plain]{\titlepage} 
+\frame[plain]{\titlepage}
 
-\frame{\frametitle{Table of contents}\tableofcontents} 
+\frame{\frametitle{Table of contents}\tableofcontents}
 
 
 %---------------------------------------------------------
@@ -46,7 +46,7 @@
 A \textsc{Unix} system requires numerous data files for normal operations
 \begin{itemize}
 \item \texttt{/etc/passwd} - for user log-in or \texttt{ls -l}, etc
-\item \texttt{/etc/group} 
+\item \texttt{/etc/group}
 \end{itemize}
 
 These data files have been ASCII text files and were read with the standard I/O libaray.
@@ -108,7 +108,7 @@ On your machine, you can see the contents by typing \texttt{cat /etc/passwd}
 #include <pwd.h>
 struct passwd *getpwuid(uid_t uid);
 struct passwd *getpwnam(const char *name);
-// Both return: pointer if OK, NULL on error  
+// Both return: pointer if OK, NULL on error
 \end{codedef}
 
 \texttt{getpwuid} function is used by \texttt{ls(1)} program to map the numberical user ID contained in an i-node into a user's login name
@@ -133,11 +133,11 @@ void setpwent(void);
 void endpwent(void);
 \end{codedef}
 
-\texttt{getpwent} to return the next entry in the password file. 
+\texttt{getpwent} to return the next entry in the password file.
 
 The function \texttt{setpwent} rewinds whatever files it uses, and \texttt{endpwent} closes these files.
 
- When using \texttt{getpwent}, we must always be sure to close these files by calling \texttt{endpwent} when we’re through. 
+ When using \texttt{getpwent}, we must always be sure to close these files by calling \texttt{endpwent} when we’re through.
 \end{frame}
 
 
@@ -227,7 +227,7 @@ POSIX.1 defines the uname function to return information on the current host and
 \begin{codedef}
 #include <sys/utsname.h>
 int uname(struct utsname *name);
-// Returns: non-negative value if OK, −1 on error  
+// Returns: non-negative value if OK, −1 on error
 \end{codedef}
 
 {\footnotesize
@@ -254,7 +254,7 @@ Historically, BSD-derived systems provided the gethostname function to return on
 
 \begin{frame}[t]
   \frametitle{Time and Date Routines}
-The basic time service provided by the \textsc{Unix} kernel counts the number of seconds that have passed since the Epoch: 00:00:00 January 1, 1970, Coordinated Universal Time (UTC). 
+The basic time service provided by the \textsc{Unix} kernel counts the number of seconds that have passed since the Epoch: 00:00:00 January 1, 1970, Coordinated Universal Time (UTC).
 \begin{itemize}
 \item they are represented in a \texttt{time\_t} data type
 \item they are called \textit{calendar times} and represent both the time and the date
@@ -299,7 +299,7 @@ The \texttt{clock\_gettime} function can be used to get the time of the specifie
 int clock_gettime(clockid_t clock_id, struct timespec *tsp); // get the time
 int clock_getres(clockid_t clock_id, struct timespec *tsp); // resolution of a system clock
 int clock_settime(clockid_t clock_id, const struct timespec *tsp); // set the time
-// Returns: 0 if OK, −1 on error  
+// Returns: 0 if OK, −1 on error
 \end{codedef}
 
 \begin{figure}[h]
@@ -307,7 +307,7 @@ int clock_settime(clockid_t clock_id, const struct timespec *tsp); // set the ti
   \includegraphics[width=\textwidth]{figure/fig6-8_clock.png}
   \caption{Clock type identifiers}
 \end{figure}
-  
+
 \end{frame}
 
 \begin{frame}[containsverbatim,t]
@@ -328,7 +328,7 @@ int gettimeofday(struct timeval *restrict tp, void *restrict tzp);
 \begin{codedef}
 #include <time.h>
 size_t strftime(char *restrict buf, size_t maxsize, const char *restrict format, const struct tm *restrict tmptr);
-size_t strftime_l(char *restrict buf, size_t maxsize, const char *restrict format, const struct tm *restrict tmptr, locale_t locale); 
+size_t strftime_l(char *restrict buf, size_t maxsize, const char *restrict format, const struct tm *restrict tmptr, locale_t locale);
 // Both return: number of characters stored in array if room, 0 otherwise
 \end{codedef}
 
@@ -388,7 +388,7 @@ struct tm {         /* a broken-down time */
 
   \begin{itemize}
   \item Download Mobibench code from \href{https://github.com/ESOS-Lab/Mobibench/tree/master/shell}{https://github.com/ESOS-Lab/Mobibench/tree/master/shell}
-  \item Measured time is stored in timeval which is in microseconds. 
+  \item Measured time is stored in timeval which is in microseconds.
   \item Change the code to measure the performance in nanoseconds.
   \item use \texttt{diff} to create \texttt{patch} file and show your work.
   \item print out the \texttt{patch} file and handed in on the first class of 2016-10-12
@@ -402,11 +402,11 @@ struct tm {         /* a broken-down time */
 \begin{column}{0.45\textwidth}
 The original file \texttt{foo.c}
 \begin{lstlisting}
-#include <stdio.h> 
+#include <stdio.h>
 
 int main() {
 printf("Hello World\n");
-}  
+}
 \end{lstlisting}
 \end{column}
 \begin{column}{0.45\textwidth}
@@ -417,7 +417,7 @@ Your modified file \texttt{foobar.c}
 int main(int argc, char *argv[]) {
 printf("Hello World\n");
 return 0;
-} 
+}
 \end{lstlisting}
 \end{column}
 \end{columns}
@@ -467,7 +467,7 @@ The executable program file specifies this routine as the starting address for t
 \item this is set up by the link editor when it is invoked by the C
   compiler.
 \item This start-up routine takes values from the kernel---the
-  command-line arguments and the environment---and sets things up 
+  command-line arguments and the environment---and sets things up
 \end{itemize}
 
 \end{frame}
@@ -501,11 +501,11 @@ Abnormal termination (We'll discuss them later)
   \frametitle{exit(3) Functions}
 Following functions terminate a program normally
 \begin{codedef}
-#include <stdlib.h> 
+#include <stdlib.h>
 void exit(int status); // return to the kernel after some cleanup
-void _Exit(int status); // return to the kernel immediately 
+void _Exit(int status); // return to the kernel immediately
 
-#include <unistd.h> 
+#include <unistd.h>
 void _exit(int status);  // return to the kernel immediately
 \end{codedef}
 
@@ -543,8 +543,8 @@ $ make hello
 $ ./hello
 hello, world
 ^C
-$ echo $?      
-130             
+$ echo $?
+130
 \end{verbatim}
 \texttt{\$?} prints exit status of previous process
 
@@ -562,7 +562,7 @@ With ISO C, a process can register at least 32 functions that are automatically 
 \begin{codedef}
 #include <stdlib.h>
 int atexit(void (*func)(void));
-// Returns: 0 if OK, nonzero on error    
+// Returns: 0 if OK, nonzero on error
 \end{codedef}
 
 
@@ -590,7 +590,7 @@ When a program is executed, the process that does the exec can pass command-line
 
 \texttt{cd codes; make echoall}
 
-\lstinputlisting[lineskip=-5pt]{codes/echoall.c}  
+\lstinputlisting[lineskip=-5pt]{codes/echoall.c}
 
 try,
 \texttt{./echoall arguments tests}
@@ -604,7 +604,7 @@ This you might want to test
 
 \begin{frame}[t]
   \frametitle{Environment List}
-Each program is also passed an environment list 
+Each program is also passed an environment list
 \begin{itemize}
 \item it is an array of character pointers
 \item each pointer containing the address of a null-terminated C
@@ -649,10 +649,10 @@ POSIX.1 specifies that environ should be used instead of the (possible) third ar
 \begin{codedef}
 #include <stdlib.h>
 char *getenv(const char *name);
-// Returns: pointer to value associated with name, NULL if not found  
+// Returns: pointer to value associated with name, NULL if not found
 int putenv(char *str);
 // Returns: 0 if OK, nonzero on error
-int setenv(const char *name, const char *value, int rewrite); 
+int setenv(const char *name, const char *value, int rewrite);
 int unsetenv(const char *name);
 // Both return: 0 if OK, −1 on error
 \end{codedef}
@@ -661,10 +661,10 @@ int unsetenv(const char *name);
   \centering
   \begin{tabular}{l | c c | *{4}{c}  }
     Fuction & ISO C & POSIX.1 & \parbox{5em}{\centering FreeBSD 8.0} & \parbox{5ex}{\centering Linux 3.2.0} & \parbox{5em}{\centering Mac OS X 10.6.8} & \parbox{5em}{\centering Solaris 10} \\ \hline \hline
-    getenv  & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\  
-    putenv  &           &   XSI     & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\  
-    setenv  &           & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ &           \\  
-  unsetenv  &           & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ &           \\  
+    getenv  & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+    putenv  &           &   XSI     & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+    setenv  &           & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ &           \\
+  unsetenv  &           & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ &           \\
   clearenv  &           &           &           & $\bullet$ &           &           \\
   \end{tabular}
   \caption{Support for various environment list functions}
@@ -686,7 +686,7 @@ int unsetenv(const char *name);
 \item[Uninitialized data segment] Often called the ``bss'' segment (A.K.A ``block started by symbol'') \\
 \texttt{long sum[1000];}
 \item[Stack] Automatic variables are stored. Each time a function is called, the address of where to return to and info about the caller's environment (i.e., registers) are saved on the stack.
-\item[Heap] dynamic memory allocation. 
+\item[Heap] dynamic memory allocation.
   \end{description}
 
 
@@ -704,12 +704,12 @@ int unsetenv(const char *name);
       \draw [black, thick] (0,0) rectangle (4,7.5);
       \node [align=right, above left] at (0, 0) {\footnotesize Low address};
       \node [align=right, below left] at (0, 7.5) {\footnotesize High address};
-      
+
       % high address before stack
       \uncover<2->{ \draw [black, thin] (0,6.5) -- (4,6.5);}
       % brace
       \uncover<2->{ \draw [decorate,decoration={brace,amplitude=7pt},xshift=5pt,yshift=0pt] (4,7.5) -- (4,6.5) node [black,align=left,midway,right, xshift=5pt] {\footnotesize command line arguments \\ \footnotesize and environment variables}; }
-      
+
       % text
       \uncover<3->{ \draw [black, thin] (0,0) rectangle (4,1) node [black, align=center, midway] {\footnotesize text};}
       % initialized data
@@ -741,7 +741,7 @@ int unsetenv(const char *name);
   \frametitle{Shared Libraries}
 \texttt{size(1)} command reports the size (in bytes) of the text, data, and bss segments.
 
-Mac does not support static linking of a library, but on Linux supports static linking. 
+Mac does not support static linking of a library, but on Linux supports static linking.
 
 Compare the size of a program before and after static linking.
 \bigskip
@@ -780,11 +780,11 @@ wc -l obj_layout_st
 \begin{codedef}
 #include <stdlib.h>
 void *malloc(size_t size);
-void *calloc(size_t nobj, size_t size); 
+void *calloc(size_t nobj, size_t size);
 void *realloc(void *ptr, size_t newsize);
 // All three return: non-null pointer if OK, NULL on error
 
-void free(void *ptr);  
+void free(void *ptr);
 \end{codedef}
 \begin{description}
 \item[\texttt{malloc}] allocates a specified number of bytes of memory. The initial value of the memory is indeterminate
@@ -819,6 +819,7 @@ void longjmp(jmp_buf env, int val);
 \end{itemize}
 \end{frame}
 
+\begin{comment}
 \subsection{Last Words}
 
 \begin{frame}
@@ -827,5 +828,5 @@ void longjmp(jmp_buf env, int val);
   \item read chapter 8
   \end{itemize}
 \end{frame}
-
+\end{comment}
 \end{document}

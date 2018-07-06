@@ -1,4 +1,4 @@
-texfile = 12_misc.tex
+texfile = 12_socket.tex
 outdir=/tmp
 
 all: ${texfile}

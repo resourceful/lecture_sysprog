@@ -1,6 +1,6 @@
-% Author: Seongjin Lee 
-% Hanyang University, Seoul, Korea 
-% esos.hanyang.ac.kr 
+% Author: Seongjin Lee
+% Hanyang University, Seoul, Korea
+% esos.hanyang.ac.kr
 % 2016-09-20
 % note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
 % https://github.com/resourceful/lecture_sysprog/
@@ -9,9 +9,9 @@
 \usepackage{kotex}
 %\usetheme{sthlm}
 \usepackage{../beamer_template/beamerthemesthlm}
-\hypersetup{pdfauthor={Seongjin Lee (insight@hanyang.ac.kr)},
+\hypersetup{pdfauthor={Seongjin Lee (insight@gnu.ac.kr)},
             pdfsubject={Lecture Note: System Programming},
-            pdfkeywords={Lecture Note, System Programming, class, undergraduate},
+            pdfkeywords={Lecture Note, System Programming, class, (under)graduate},
             pdfmoddate={D: \pdfdate},
             pdfcreator={Seongjin Lee}}
 
@@ -25,16 +25,16 @@
 \title{System Programming}
 \subtitle{Week 6: Process Control}
 \author[SJL]{Seongjin Lee}
-\institute{\href{mailto:insight@hanyang.ac.kr}{insight@hanyang.ac.kr}\\\url{http://esos.hanyang.ac.kr}\\Esos Lab. Hanyang University}
-\date{2016-10-12} 
+\institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
+\date{\today}
 
 \begin{document}
 
 
 
-\frame[plain]{\titlepage} 
+\frame[plain]{\titlepage}
 
-\frame{\frametitle{Table of contents}\tableofcontents} 
+\frame{\frametitle{Table of contents}\tableofcontents}
 
 
 %---------------------------------------------------------
@@ -85,7 +85,7 @@ gid_t getgid(void);
 // Returns: real group ID of calling process
 
 gid_t getegid(void);
-// Returns: effective group ID of calling process  
+// Returns: effective group ID of calling process
 \end{codedef}
 \end{frame}
 
@@ -112,14 +112,14 @@ pid_t fork(void);
 \item The return value in the parent is the process ID of the new child
 \item The child is copy of the parent
 \item Both the child and the parent continue executing with the instruction that follows the call to \texttt{fork}
-\end{itemize}  
+\end{itemize}
 
 Must understand that
 \begin{itemize}
 \item The order of execution of the child and the parent depends on the scheduling algorithm
 \item The parent and the child share the same file offset
 \item The child has its own copy of the parent's descriptors
-\end{itemize}  
+\end{itemize}
 \end{frame}
 
 
@@ -136,7 +136,7 @@ Must understand that
 \begin{verbatim}
 make fork
 ./fork
-./fork | cat 
+./fork | cat
 \end{verbatim}
 
 When we write to standard output
@@ -297,7 +297,7 @@ Process can terminate normally in five ways
     % \end{itemize}
 
   \item Calling the \texttt{pthread\_exit} function from the last
-    thread in the process. 
+    thread in the process.
   \end{itemize}
 
 Regardless of how a process terminates, the same code in the kernel is eventually executed
@@ -333,7 +333,7 @@ A process that calls \texttt{wait} or \texttt{waitpid} can
 #include <sys/wait.h>
 pid_t wait(int *statloc);
 pid_t waitpid(pid_t pid, int *statloc, int options);
-// Both return: process ID if OK, 0 (see later), or -1 on error  
+// Both return: process ID if OK, 0 (see later), or -1 on error
 \end{codedef}
 
 \begin{itemize}
@@ -348,7 +348,7 @@ pid_t waitpid(pid_t pid, int *statloc, int options);
 \end{frame}
 
 \begin{frame}[containsverbatim,t]
-  \frametitle{\texttt{wait(2)} \texttt{waitpid(2)} Function}  
+  \frametitle{\texttt{wait(2)} \texttt{waitpid(2)} Function}
 if we have more than one child, wait returns on termination of any of the children
 
 we need is a function that waits for a specific process: \texttt{waitpid}
@@ -386,8 +386,8 @@ If we get the termination status in \texttt{status}, we can determine how a chil
 \end{frame}
 
 \begin{frame}[containsverbatim,t]
-  \frametitle{\texttt{wait(2)} \texttt{waitpid(2)} Function}  
-The options argument lets us further control the operation of waitpid. This argument either is 0 or is constructed from the bitwise OR of the constants 
+  \frametitle{\texttt{wait(2)} \texttt{waitpid(2)} Function}
+The options argument lets us further control the operation of waitpid. This argument either is 0 or is constructed from the bitwise OR of the constants
   \begin{description}
   \item[\texttt{WCONTINUED}] If the implementation supports job
     control, the status of any child specified by \textit{pid} that
@@ -421,7 +421,7 @@ The options argument lets us further control the operation of waitpid. This argu
 
 \begin{frame}[containsverbatim,t]
   \frametitle{Termination status example}
-  
+
   \lstinputlisting[linerange={6-20},lineskip=0em]{codes/exit_stat.c}
 
 \end{frame}
@@ -458,8 +458,8 @@ When a process calls one of the \texttt{exec} functions, that process is complet
 int execl(const char *pathname, const char *arg0, ... /* (char *)0 */ );
 int execv(const char *pathname, char *const argv[]);
 int execle(const char *pathname, const char *arg0, ... /* (char *)0, char *const envp[] */ );
-int execve(const char *pathname, char *const argv[], char *const envp[]); 
-int execlp(const char *filename, const char *arg0, ... /* (char *)0 */ ); 
+int execve(const char *pathname, char *const argv[], char *const envp[]);
+int execlp(const char *filename, const char *arg0, ... /* (char *)0 */ );
 int execvp(const char *filename, char *const argv[]);
 int fexecve(int fd, char *const argv[], char *const envp[]);
 // All seven return: -1 on error, no return on success
@@ -473,14 +473,14 @@ int fexecve(int fd, char *const argv[], char *const envp[]);
     \centering\footnotesize
     \begin{tabular}{l | *{3}{ c | }| *{2} { c | } | c | c }
       Function & pathname & filename & fd & arg list & arvg[] & environ & envp[] \\ \hline
-      \texttt{execl} & $\bullet$  &   &   & $\bullet$  &    & $\bullet$   &     \\ 
+      \texttt{execl} & $\bullet$  &   &   & $\bullet$  &    & $\bullet$   &     \\
       \texttt{execlp} &   & $\bullet$  &   &   &  $\bullet$  & $\bullet$   &     \\
       \texttt{execle} & $\bullet$   &   &   & $\bullet$  &    &    & $\bullet$    \\
-      \texttt{execv} & $\bullet$  &   &   &   &   $\bullet$ & $\bullet$   &     \\ 
+      \texttt{execv} & $\bullet$  &   &   &   &   $\bullet$ & $\bullet$   &     \\
       \texttt{execvp} &   & $\bullet$  &   &   &  $\bullet$  & $\bullet$   &     \\
       \texttt{execve} & $\bullet$  &   &   &   &  $\bullet$  &    &  $\bullet$   \\
       \texttt{fexecve} &   &   & $\bullet$  &   & $\bullet$   &    & $\bullet$    \\ \hline
-      letter &   & p  & f   & l  &  v  &    & e    \\ 
+      letter &   & p  & f   & l  &  v  &    & e    \\
     \end{tabular}
     \caption{Difference among the seven \texttt{exec} functions}
     \label{tab:diff-exec}
@@ -545,10 +545,10 @@ If a program can't access some resources, they need to change their user or grou
   \frametitle{APIs to Change User IDs and Group IDs}
 
 \begin{codedef}
-#include <unistd.h> 
+#include <unistd.h>
 int setuid(uid_t uid);  // set the real and effective user ID
 int setgid(gid_t gid);  // set the real and effective group ID
-// Both return: 0 if OK, -1 on error    
+// Both return: 0 if OK, -1 on error
 \end{codedef}
 
 The rules for who can change the IDs (same applies to user ID and Group ID)
@@ -611,9 +611,9 @@ with the \texttt{setreuid} function.
 \end{itemize}
 \begin{codedef}
 #include <unistd.h>
-int setreuid(uid_t ruid, uid_t euid); 
+int setreuid(uid_t ruid, uid_t euid);
 int setregid(gid_t rgid, gid_t egid);
-// Both return: 0 if OK, -1 on error  
+// Both return: 0 if OK, -1 on error
 \end{codedef}
 
 The rule
@@ -627,10 +627,10 @@ The rule
   \frametitle{\texttt{seteuid} and \texttt{setegid} Functions}
 POSIX.1 includes the two functions \texttt{seteuid} and \texttt{setegid}. These functions are similar to \texttt{setuid} and \texttt{setgid}, but only the effective user ID or effective group ID is changed.
 \begin{codedef}
-#include <unistd.h> 
-int seteuid(uid_t uid); 
+#include <unistd.h>
+int seteuid(uid_t uid);
 int setegid(gid_t gid);
-// Both return: 0 if OK, -1 on error  
+// Both return: 0 if OK, -1 on error
 \end{codedef}
 \end{frame}
 
@@ -660,7 +660,7 @@ All contemporary UNIX systems support interpreter files. These files are text fi
 The most common of these interpreter files begin with the line
 
 \texttt{\#!/bin/sh}
-  
+
 \end{frame}
 
 \begin{frame}[containsverbatim,t]
@@ -770,9 +770,9 @@ char *getlogin(void);
   \frametitle{Process Scheduling}
 A process can retrieve and change \textit{its} nice value with \texttt{nice} function
 \begin{codedef}
-#include <unistd.h> 
+#include <unistd.h>
 int nice(int incr);
-// Returns: new nice value - NZERO if OK, -1 on error 
+// Returns: new nice value - NZERO if OK, -1 on error
 
 #include <sys/resource.h>
 int getpriority(int which, id_t who);
@@ -899,11 +899,12 @@ command: man bash > /dev/null
   child user:     0.29
   child sys:      0.08
 normal termination, exit status = 0
-\end{lstlisting}   
+\end{lstlisting}
   \end{column}
 \end{columns}
 
 \end{frame}
+
 
 %---------------------------------------------------------
 \section{Last Words}
@@ -916,8 +917,9 @@ normal termination, exit status = 0
 \item There are total of 18 examples.
 \item Describe and explain the result for each \texttt{fork}s
 \item Draw a diagram where possible, it helps you understanding the behavior
-\item Due date Oct-26
+%\item Due date Oct-26
 \end{itemize}
 \end{frame}
+
 
 \end{document}

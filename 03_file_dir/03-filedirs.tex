@@ -1,6 +1,6 @@
-% Author: Seongjin Lee 
-% Hanyang University, Seoul, Korea 
-% esos.hanyang.ac.kr 
+% Author: Seongjin Lee
+% Hanyang University, Seoul, Korea
+% esos.hanyang.ac.kr
 % 2016-09-20
 % note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
 % https://github.com/resourceful/lecture_sysprog/
@@ -9,9 +9,9 @@
 \usepackage{kotex}
 %\usetheme{sthlm}
 \usepackage{../beamer_template/beamerthemesthlm}
-\hypersetup{pdfauthor={Seongjin Lee (insight@hanyang.ac.kr)},
+\hypersetup{pdfauthor={Seongjin Lee (insight@gnu.ac.kr)},
             pdfsubject={Lecture Note: System Programming},
-            pdfkeywords={Lecture Note, System Programming, class, undergraduate},
+            pdfkeywords={Lecture Note, System Programming, class, (under)graduate},
             pdfmoddate={D: \pdfdate},
             pdfcreator={Seongjin Lee}}
 
@@ -26,16 +26,16 @@
 \title{System Programming}
 \subtitle{Week 4: Files and Directories}
 \author[SJL]{Seongjin Lee}
-\institute{\href{mailto:insight@hanyang.ac.kr}{insight@hanyang.ac.kr}\\\url{http://esos.hanyang.ac.kr}\\Esos Lab. Hanyang University}
-\date{2016-09-27} 
+\institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
+\date{\today}
 
 \begin{document}
 
 
 
-\frame[plain]{\titlepage} 
+\frame[plain]{\titlepage}
 
-\frame{\frametitle{Table of contents}\tableofcontents} 
+\frame{\frametitle{Table of contents}\tableofcontents}
 
 
 %---------------------------------------------------------
@@ -61,7 +61,7 @@ int stat(const char *restrict pathname, struct stat *restrict buf );
 int fstat(int fd, struct stat *buf);
 int lstat(const char *restrict pathname, struct stat *restrict buf );
 int fstatat(int fd, const char *restrict pathname, struct stat *restrict buf, int flag);
-&&\hfill // All four return: 0 if OK, −1 on error 
+&&\hfill // All four return: 0 if OK, −1 on error
 \end{codedef}
 \begin{itemize}
 \item \texttt{stat}: returns a structure of information about the file
@@ -93,9 +93,9 @@ struct stat {
    struct timespec st_atim;	/* time of last access */
    struct timespec st_mtim;	/* time of last modification */
    struct timespec st_ctim;	/* time of last file status change */
-   blksize_t       st_blksize; /* best I/O block size */		
-   blkcnt_t        st_blocks;  /* number of disk blocks allocated */		
-};		
+   blksize_t       st_blksize; /* best I/O block size */
+   blkcnt_t        st_blocks;  /* number of disk blocks allocated */
+};
 \end{codedef}
 
 Note that most members of the \texttt{stat} structure are specified by a \textit{primitive system data type} (see Section 2.8, header \texttt{<sys/types.h>})
@@ -103,7 +103,7 @@ Note that most members of the \texttt{stat} structure are specified by a \textit
 
 \begin{frame}[t]
   \frametitle{File Types}
-Everything is a file in \textsc{Unix}. There are .... 
+Everything is a file in \textsc{Unix}. There are ....
 \begin{itemize}
 \item Regular file: {\footnotesize The most common type, and there is
     no disctiction whether the data is text or binary. Application is
@@ -129,7 +129,7 @@ Everything is a file in \textsc{Unix}. There are ....
 The type of a file is encoded in the \texttt{st\_mode} member of the \texttt{stat} structure
 
 \begin{codedef}
-struct stat st; 
+struct stat st;
 if (S_ISREG(st.st_mode));
     printf("Regular File\n");
 \end{codedef}
@@ -146,7 +146,7 @@ if (S_ISREG(st.st_mode));
     \texttt{S\_ISBLK()}	&	block special file	\\  \hline
     \texttt{S\_ISFIFO()}	&	pipe or FIFO	\\  \hline
     \texttt{S\_ISLNK()}	&	symbolic link	\\  \hline
-    \texttt{S\_ISSOCK()}	&	socket 	\\  
+    \texttt{S\_ISSOCK()}	&	socket 	\\
   \end{tabular}
   \caption{File type macros in \texttt{<sys/stat.h>}}
 \end{table}
@@ -163,12 +163,12 @@ First, let's review \texttt{./codes/myls.c}
 
 \begin{frame}[t]
   \frametitle{Let's improve the code (myls.c, Fig. 4.3)}
-The code at the moment does not show file types. 
+The code at the moment does not show file types.
 
-Make changes to the code such that it prints out the file types. 
+Make changes to the code such that it prints out the file types.
 
 Use Fig. 4.3 as reference.
-  
+
 \end{frame}
 
 \section{Attributes}
@@ -179,10 +179,10 @@ Every process has six or more IDs associated with it
   \begin{table}[h]
     \centering
     \begin{tabular}{l | l}
-     real user ID & \multirow{2}{*}{who we really are} \\ 
+     real user ID & \multirow{2}{*}{who we really are} \\
      real group ID & \\ \hline
-     effective group ID & \multirow{3}{*}{used for file accessed permission checks} \\ 
-     effective group ID & \\ 
+     effective group ID & \multirow{3}{*}{used for file accessed permission checks} \\
+     effective group ID & \\
      supplimentary group IDs & \\ \hline
      saved set-user-ID & \multirow{2}{*}{saved by exec function} \\
      saved set-group-ID & \\
@@ -211,7 +211,7 @@ Every file has an owner and a group owner. The owner is specified by the \texttt
           S\_IXGRP & group-excute \\ \hline
           S\_IROTH & other-read   \\
           S\_IWOTH & other-write  \\
-          S\_IXOTH & other-excute \\ 
+          S\_IXOTH & other-excute \\
         \end{tabular}
         \caption{The nine file access permission bits from <sys/stat.h>}
         \end{table}
@@ -315,9 +315,9 @@ Which permission set to use is determined (in order listed):
 Every process has file mode creation mask
 
 \begin{codedef}
-#include <sys/stat.h> 
+#include <sys/stat.h>
 mode_t umask(mode_t cmask);
-// Returns: previous file mode creation mask  
+// Returns: previous file mode creation mask
 \end{codedef}
 
 \textit{cmask} argument is formed as the bitwise OR of the nine constants from page \ref{fig:4.6}
@@ -348,10 +348,10 @@ James@maker$
 
 \begin{frame}[t]
   \frametitle{umask More}
-Most users on \textsc{Unix} systems never deal with their \texttt{umask} value (set only once, on login, by the shell's start-up file, and never changed). 
+Most users on \textsc{Unix} systems never deal with their \texttt{umask} value (set only once, on login, by the shell's start-up file, and never changed).
 \bigskip
 
-If you want to ensure that specific access permission bits are enabled, you must modify the \texttt{umask} value while your process is running. 
+If you want to ensure that specific access permission bits are enabled, you must modify the \texttt{umask} value while your process is running.
 
 \end{frame}
 
@@ -364,7 +364,7 @@ If you want to ensure that specific access permission bits are enabled, you must
 int chmod(const char *pathname, mode_t mode);
 int fchmod(int fd, mode_t mode);
 int fchmodat(int fd, const char *pathname, mode_t mode, int flag);
-// All three return: 0 if OK, −1 on error    
+// All three return: 0 if OK, −1 on error
 \end{codedef}
 \bigskip
 
@@ -451,7 +451,7 @@ James@maker:codes$ ls -al foo bar
 
 \begin{frame}[containsverbatim,t]
   \frametitle{chown, fchown, fchownat, and lchown Function}
-The \texttt{chown} functions allow us to change a file’s user ID and group ID, 
+The \texttt{chown} functions allow us to change a file’s user ID and group ID,
 
 \bigskip
 \begin{codedef}
@@ -483,7 +483,7 @@ Non-superusers can change the \texttt{st\_gid} field if followings are true
 
 \begin{frame}[t]
   \frametitle{File Size}
-\texttt{st\_size} member of the \texttt{stat} structure contains the size of the file in bytes 
+\texttt{st\_size} member of the \texttt{stat} structure contains the size of the file in bytes
 \begin{itemize}
 \item Regualr file -- a file size of 0 is allowed; returns end-of-file indications on the first read of the file
 \item Directory -- the file size usually a multiple of a number
@@ -500,8 +500,8 @@ Watch how the size of directory grows
 \begin{verbatim}
 mkdir -p /tmp/temp; ls -ld /tmp/temp
 for file in a b c d e f g ; do
-touch /tmp/temp/${file} ; echo "creating /tmp/temp/${file}" 
-ls -ld /tmp/temp; 
+touch /tmp/temp/${file} ; echo "creating /tmp/temp/${file}"
+ls -ld /tmp/temp;
 done
 \end{verbatim}
 
@@ -518,11 +518,11 @@ echo $DIRNAME | wc -c
   \frametitle{File Truncation}
 \begin{codedef}
 #include <unistd.h>
-int truncate(const char *pathname, off_t length); 
+int truncate(const char *pathname, off_t length);
 int ftruncate(int fd, off_t length);
-// Both return: 0 if OK, −1 on error   
+// Both return: 0 if OK, −1 on error
 \end{codedef}
-The two functions truncate an existing file to \textit{length} bytes. 
+The two functions truncate an existing file to \textit{length} bytes.
 \begin{itemize}
 \item if the file is greater than \textit{length}, the data beyond \textit{length} is no longer accessible
 \item Previous size was less than \textit{length}, the file size will increase, the in between data will read as \texttt{0}
@@ -537,14 +537,14 @@ The two functions truncate an existing file to \textit{length} bytes.
 \begin{frame}
   \frametitle{Disk drive, partitions, and a file system}
 We can think of a disk drive being divided into one or more partitions. Each partition can contain a file system. The i-nodes are fixed-length entries that contain most of the information about a file.
-\includegraphics[width=\textwidth]{figure/fig4_13_disk.png}  
+\includegraphics[width=\textwidth]{figure/fig4_13_disk.png}
 \end{frame}
 
 
 
 \begin{frame}
   \frametitle{Cylinder group's inodes and data blocks in more detail}
-\includegraphics[width=\textwidth]{figure/fig4_14_cylinder.png}  
+\includegraphics[width=\textwidth]{figure/fig4_14_cylinder.png}
 
 Shows example of two directory entries point to the same i-node
   entry.
@@ -567,7 +567,7 @@ Shows example of two directory entries point to the same i-node
     \item the i-node number
     \end{itemize}
   \item directory entry can't refer to an i-node in a different File System
-  \item When renaming, add a new directory entry that points to the existing i-node and then unlink the old directory entry 
+  \item When renaming, add a new directory entry that points to the existing i-node and then unlink the old directory entry
   \end{itemize}
 
 \end{frame}
@@ -575,7 +575,7 @@ Shows example of two directory entries point to the same i-node
 \begin{frame}
   \frametitle{Sample cylinder group after creating the directory testdir}
 Result of \texttt{\$ mkdir testdir} ; the two entries ``dot'' and ``dot-dot''
-\includegraphics[width=\textwidth]{figure/fig4_15_sample.png}  
+\includegraphics[width=\textwidth]{figure/fig4_15_sample.png}
 \end{frame}
 
 
@@ -626,7 +626,7 @@ int unlinkat(int fd, const char *pathname, int flag);
 \begin{itemize}
 \item Remove the directory entry and decrement the link count of the file referenced by \textit{pathname}
 \item If there are other links to the file, the data in the file is still accessible through the other links
-\item To unlink a file, we must have write  and execute permission in the directory containing the directory entry because we are modifying the directory entry 
+\item To unlink a file, we must have write  and execute permission in the directory containing the directory entry because we are modifying the directory entry
 \item Only when the link count reaches 0 can the contents of the file be deleted
 \item If a process has the file open, its contents will not be deleted
   \begin{itemize}
@@ -697,13 +697,13 @@ int renameat(int oldfd, const char *oldname, int newfd, const char *newname);
 
 \begin{frame}[t]
   \frametitle{rename Function - the detail}
-\texttt{int rename(const char *oldname, const char *newname);}  
+\texttt{int rename(const char *oldname, const char *newname);}
 \bigskip
 
-If oldname refers to \textbf{is a file}, it is renaming a file or a symbolic link. 
+If oldname refers to \textbf{is a file}, it is renaming a file or a symbolic link.
 {\footnotesize
 \begin{itemize}
-\item 
+\item
   \begin{itemize}
   \item If \textit{newname} exists and is not a directory, it is
     removed, and \textit{oldname} is renamed to \textit{newname}.
@@ -718,7 +718,7 @@ If oldname refers to \textbf{is a file}, it is renaming a file or a symbolic lin
 \begin{frame}[t]
   \frametitle{rename Function - the detail}
 
-\texttt{int rename(const char *oldname, const char *newname);}  
+\texttt{int rename(const char *oldname, const char *newname);}
 \bigskip
 
 If oldname refers to \textbf{is a directory}, it is renaming a directory.
@@ -739,7 +739,7 @@ If oldname refers to \textbf{is a directory}, it is renaming a directory.
 \begin{frame}[t]
   \frametitle{rename Function - the detail}
 
-\texttt{int rename(const char *oldname, const char *newname);}  
+\texttt{int rename(const char *oldname, const char *newname);}
 \bigskip
 
 Other details
@@ -764,11 +764,11 @@ Other details
 #include <unistd.h>
 int symlink(const char *actualpath, const char *sympath);
 int symlinkat(const char *actualpath, int fd, const char *sympath);
-// Both return: 0 if OK, −1 on error   
+// Both return: 0 if OK, −1 on error
 \end{codedef}
 
 \begin{itemize}
-\item A new directory entry, \textit{sympath}, is created that points to \textit{actualpath}. 
+\item A new directory entry, \textit{sympath}, is created that points to \textit{actualpath}.
 \item It is not required that \textit{actualpath} exist when the symbolic link is created.
 \end{itemize}
 \end{frame}
@@ -781,7 +781,7 @@ Because the \texttt{open} function follows a symbolic link, we need a way to ope
 
 \begin{codedef}
 #include <unistd.h> ssize_t readlink(const char* restrict pathname, char *restrict buf, size_t bufsize); ssize_t
-readlinkat(int fd, const char* restrict pathname, char *restrict buf, size_t bufsize); 
+readlinkat(int fd, const char* restrict pathname, char *restrict buf, size_t bufsize);
 // Both return: number of bytes read if OK, −1 on error
 \end{codedef}
 \end{frame}
@@ -794,9 +794,9 @@ readlinkat(int fd, const char* restrict pathname, char *restrict buf, size_t buf
 \centering
 \begin{tabular}[t]{{l | l | l | l }}
 Field & Description & Example & \texttt{ls(1) option} \\ \hline \hline
-\texttt{st\_atim} & last-access time of file data & \texttt{read} & \texttt{-u} \\ 
-\texttt{st\_mtim} & last-modification time of file data & \texttt{write} & default \\ 
-\texttt{st\_ctim} & last-change time of i-node status & \texttt{chmod}, \texttt{chown} & \texttt{-c} \\ 
+\texttt{st\_atim} & last-access time of file data & \texttt{read} & \texttt{-u} \\
+\texttt{st\_mtim} & last-modification time of file data & \texttt{write} & default \\
+\texttt{st\_ctim} & last-change time of i-node status & \texttt{chmod}, \texttt{chown} & \texttt{-c} \\
 \end{tabular}
 \caption{The three time values associated with each file}
 \end{table}
@@ -827,7 +827,7 @@ Several functions are available to change the access time and the modification t
 #include <sys/stat.h>
 int futimens(int fd, const struct timespec times[2]);
 int utimensat(int fd, const char *path, const struct timespec times[2], int flag);
-// Both return: 0 if OK, −1 on error  
+// Both return: 0 if OK, −1 on error
 \end{codedef}
 {\footnotesize
 \begin{itemize}
@@ -875,7 +875,7 @@ functions, and deleted with the \texttt{rmdir} function.
 #include <sys/stat.h>
 int mkdir(const char *pathname, mode_t mode);
 int mkdirat(int fd, const char *pathname, mode_t mode);
-// Both return: 0 if OK, −1 on error    
+// Both return: 0 if OK, −1 on error
 \end{codedef}
 
 \begin{itemize}
@@ -902,20 +902,20 @@ If a link count of the directory becomes 0 with this call, and if no other proce
 
 \begin{frame}[containsverbatim,t]
   \frametitle{Reading Directories}
-Directories can be read by anyone who has access permission to read the directory. But only the kernel can write to a directory, to preserve file system sanity. 
+Directories can be read by anyone who has access permission to read the directory. But only the kernel can write to a directory, to preserve file system sanity.
 
 \begin{codedef}
 #include <dirent.h>
-DIR *opendir(const char *pathname); 
+DIR *opendir(const char *pathname);
 DIR *fdopendir(int fd);
-// Both return: pointer if OK, NULL on error 
+// Both return: pointer if OK, NULL on error
 
-struct dirent *readdir(DIR *dp); 
+struct dirent *readdir(DIR *dp);
 // Returns: pointer if OK, NULL at end of directory or error
 
 void rewinddir(DIR *dp);
 int closedir(DIR *dp);
-// Returns: 0 if OK, −1 on error 
+// Returns: 0 if OK, −1 on error
 \end{codedef}
 
 
@@ -931,7 +931,7 @@ The dirent structure (format of directory) defined in <dirent.h> is implementati
 
 \begin{codedef}
 #include <unistd.h>
-int chdir(const char *pathname); 
+int chdir(const char *pathname);
 int fchdir(int fd);
 // Both return: 0 if OK, −1 on error
 
@@ -958,6 +958,7 @@ Let's review \texttt{codes/chdir.c}
 
 \end{frame}
 
+
 \section{Last Words}
 \begin{frame}[t]
   \frametitle{Homework}
@@ -965,7 +966,7 @@ Let's review \texttt{codes/chdir.c}
   \begin{itemize}
   \item Review chapter 4
   \item Read chapter 5
-  \item Setup ctag, download the kernel containing F2FS, we are going to implement new feature -- more info at \url{http://resourceful.github.io/classes/2016-09-21-announcing-the-project/}
+%  \item Setup ctag, download the kernel containing F2FS, we are going to implement new feature -- more info at \url{http://resourceful.github.io/classes/2016-09-21-announcing-the-project/}
   \end{itemize}
 \end{frame}
 

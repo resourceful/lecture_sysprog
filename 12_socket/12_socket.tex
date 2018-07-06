@@ -1,6 +1,6 @@
-% Author: Seongjin Lee 
-% Hanyang University, Seoul, Korea 
-% esos.hanyang.ac.kr 
+% Author: Seongjin Lee
+% Hanyang University, Seoul, Korea
+% esos.hanyang.ac.kr
 % 2016-09-20
 % note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
 % https://github.com/resourceful/lecture_sysprog/
@@ -9,9 +9,9 @@
 \usepackage{kotex}
 %\usetheme{sthlm}
 \usepackage{../beamer_template/beamerthemesthlm}
-\hypersetup{pdfauthor={Seongjin Lee (insight@hanyang.ac.kr)},
+\hypersetup{pdfauthor={Seongjin Lee (insight@gnu.ac.kr)},
             pdfsubject={Lecture Note: System Programming},
-            pdfkeywords={Lecture Note, System Programming, class, undergraduate},
+            pdfkeywords={Lecture Note, System Programming, class, (under)graduate},
             pdfmoddate={D: \pdfdate},
             pdfcreator={Seongjin Lee}}
 
@@ -25,16 +25,16 @@
 \title{System Programming}
 \subtitle{Week 15: Sockets}
 \author[SJL]{Seongjin Lee}
-\institute{\href{mailto:insight@hanyang.ac.kr}{insight@hanyang.ac.kr}\\\url{http://esos.hanyang.ac.kr}\\Esos Lab. Hanyang University}
-\date{2016-12-14} 
+\institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
+\date{\today}
 
 \begin{document}
 
 
 
-\frame[plain]{\titlepage} 
+\frame[plain]{\titlepage}
 
-\frame[t]{\frametitle{Table of contents}\tableofcontents} 
+\frame[t]{\frametitle{Table of contents}\tableofcontents}
 
 
 %---------------------------------------------------------
@@ -43,7 +43,7 @@
 
 \begin{frame}[t, fragile]
   \frametitle{Sockets}
-Socket netwok IPC interface that allow to communicate with other process 
+Socket netwok IPC interface that allow to communicate with other process
 \begin{itemize}
 \item either on the same machine or
 \item on different machine over a network
@@ -71,13 +71,13 @@ Sockets are created using the socket syscall which returns a file descriptor to 
 \begin{codedef}
 #include <sys/socket.h>
 fd = socket(domain, type, protocol)
-// Returns: file descriptor on success, -1 on error  
+// Returns: file descriptor on success, -1 on error
 \end{codedef}
 
 
 \begin{itemize}
 \item Domain: \texttt{AF\_UNIX}, \texttt{AF\_INET}, \texttt{AF\_INET6}
-\item Each communication domain determines 
+\item Each communication domain determines
   \begin{itemize}
   \item how to identify a socket, that is the syntax and semantics of socket well-known addresses
   \item the communication range, e.g. single or multiple hosts
@@ -112,7 +112,7 @@ Socket types offer different IPC features
     Feature & \texttt{SOCK\_STREAM} & \texttt{SOCK\_DGRAM} \\ \hline
     realiable delivery & yes & no \\ \hline
     fixed length & no & yes \\ \hline
-    connection-oriented & yes & no \\ 
+    connection-oriented & yes & no \\
   \end{tabular}
 \end{table}
 \end{frame}
@@ -120,7 +120,7 @@ Socket types offer different IPC features
 
 \begin{frame}[t, fragile]
   \frametitle{Stream Sockets : \texttt{SOCK\_STREAM}}
-Stream sockets provide communication channels which are: 
+Stream sockets provide communication channels which are:
 \begin{itemize}
 \item byte-stream: communication happens as a continuous stream of bytes
 \item reliable: either data transmitted arrive at destination, or the sender gets an error
@@ -138,7 +138,7 @@ Datagram sockets provide communication channels which are:
 \item message-oriented: data is exchanged at the granularity of messages that peers send to one another; Message length is fixed
 \item non-reliable: messages can get lost. Also:
   \begin{itemize}
-  \item messages can arrive out of order 
+  \item messages can arrive out of order
   \item messages can be duplicated and arrive multiple times
   \end{itemize}
   It is up to applications to detect these scenarios and react
@@ -173,7 +173,7 @@ An address identifies a socket endpoint in a particular communication domain. Th
  struct sockaddr {
      sa_family_t  sa_family;    /* address family */
      char         sa_data[14];  /* socket address (size varies with the socke domain) */
-}; 
+};
 \end{codedefnb}
 \begin{itemize}
 \item Each socket domain has its own variant of \texttt{sockaddr}
@@ -189,7 +189,7 @@ An address identifies a socket endpoint in a particular communication domain. Th
   \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{figures/fig_socket_syscall.png}
-  \end{figure}    
+  \end{figure}
 \end{column}
 \begin{column}{0.5\textwidth}
  ``Server'' and ``Client'' are ambiguous terms
@@ -233,7 +233,7 @@ int listen(int sockfd, int backlog);
 You can accept connections (i.e. perform a passive open) with:
 \begin{codedef}
 #include <sys/socket.h>
-int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen); 
+int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 // Returns: file descriptor on success, -1 on error
 \end{codedef}
 \begin{itemize}
@@ -268,7 +268,7 @@ int listenfd;   /* Socket to listen on */
 int optval = 1; /* Used by setsockopt() below */
 if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
      perror("Cannot create socket");
-     exit(1); 
+     exit(1);
 }
 
 /* Allow this socket to reuse a port number */
@@ -280,7 +280,7 @@ if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR,
 \end{codedefnb}
 \begin{itemize}
 \item create a socket: \texttt{socket()} system call
-\item use \texttt{setsockopt()} to permit socket to reuse the server port number 
+\item use \texttt{setsockopt()} to permit socket to reuse the server port number
 \end{itemize}
 \end{frame}
 
@@ -295,21 +295,21 @@ server_addr.sin_family = AF_INET;
 server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 server_addr.sin_port = htons(80); /* Listen for connections on port 80 */
 /* Bind socket to address */
-if (bind(listenfd, (struct sockaddr *)&server_addr, 
+if (bind(listenfd, (struct sockaddr *)&server_addr,
                           sizeof(server_addr)) < 0) {
      perror("Cannot bind socket");
-     exit(1); 
+     exit(1);
 }
-/* Listen for incoming connections. Use listen queue length of 10. */ 
+/* Listen for incoming connections. Use listen queue length of 10. */
 if (listen(listenfd, 10) < 0) {
      perror("Cannot listen");
-     exit(1); 
+     exit(1);
 }
 \end{codedefnb}
 \begin{itemize}
 \item \texttt{bind()} the socket to the port you want to listen on
   \begin{itemize}
-  \item  \texttt{INADDR\_ANY} to accept connections from any IP address 
+  \item  \texttt{INADDR\_ANY} to accept connections from any IP address
   \end{itemize}
 \item \texttt{listen()} for incoming connections
 \end{itemize}
@@ -328,8 +328,8 @@ while (1) {
                    (socklen_t*)&client_addr_len);
      /* Process connection here */
      do_something(clifd);
-     close(clifd); 
-}  
+     close(clifd);
+}
 \end{codedefnb}
 \begin{itemize}
 \item The server spins in a loop doing the following:
@@ -360,7 +360,7 @@ break; }
 coming from %s with IP address %s.<br>Have a nice day!</body></html>\n",
      hostname, hostip);
     /* Send data back to client */
-Rio_writen(clifd, buf, strlen(buf));  
+Rio_writen(clifd, buf, strlen(buf));
 \end{codedefnb}
 \end{frame}
 
@@ -370,7 +370,6 @@ Rio_writen(clifd, buf, strlen(buf));
 
 \url{http://www.binarytides.com/socket-programming-c-linux-tutorial/}
 \end{frame}
-
 
 %---------------------------------------------------------
 
@@ -383,7 +382,6 @@ Rio_writen(clifd, buf, strlen(buf));
 \item prepare for the exam
 \end{itemize}
 \end{frame}
-
 
 
 \end{document}

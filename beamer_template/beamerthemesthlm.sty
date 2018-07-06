@@ -385,10 +385,10 @@ aboveskip=1em
     \progressbar@tmpcounta=\insertframenumber
     \progressbar@tmpcountb=\inserttotalframenumber
     \progressbar@tmpdim=\progressbar@pbwd
-    \divide\progressbar@tmpdim by 10000
+    \divide\progressbar@tmpdim by 100000000
     \multiply\progressbar@tmpdim by \progressbar@tmpcounta
     \divide\progressbar@tmpdim by \progressbar@tmpcountb
-    \multiply\progressbar@tmpdim by 10000
+    \multiply\progressbar@tmpdim by 100000000
     \fontsize{1em}{1em}\selectfont
 
     \makebox[\textwidth][c]{
@@ -409,20 +409,23 @@ aboveskip=1em
 
 \if@useTitleProgressBar
 \def\progressbar@titleprogressbar{%
-  \progressbar@tmpcounta=\insertframenumber
-  \progressbar@tmpcountb=\inserttotalframenumber
-  \progressbar@tmpdim=\paperwidth
-  \divide\progressbar@tmpdim by 1000 
-  \multiply\progressbar@tmpdim by \progressbar@tmpcounta
-  \divide\progressbar@tmpdim by \progressbar@tmpcountb
-  \multiply\progressbar@tmpdim by 1000 
-  {%
-    \usebeamercolor{palette quaternary}%
-    \begin{tikzpicture}[tight background]
-      \draw[fg, fill=fg] (0, 0) rectangle ($(\paperwidth, 2pt) - (0.4pt, 0)$);
-      \draw[bg, fill=bg] (0, 0) rectangle (\progressbar@tmpdim, 2pt);
-    \end{tikzpicture}%
-  }%
+  \ifnum\inserttotalframenumber=1
+  \else
+    \progressbar@tmpcounta=\insertframenumber
+    \progressbar@tmpcountb=\inserttotalframenumber
+    \progressbar@tmpdim=\paperwidth
+    \divide\progressbar@tmpdim by 1000000 
+    \multiply\progressbar@tmpdim by \progressbar@tmpcounta
+    \divide\progressbar@tmpdim by \progressbar@tmpcountb
+    \multiply\progressbar@tmpdim by 1000000 
+    {%
+      \usebeamercolor{palette quaternary}%
+      \begin{tikzpicture}[tight background]
+        \draw[fg, fill=fg] (0, 0) rectangle ($(\paperwidth, 2pt) - (0.4pt, 0)$);
+        \draw[bg, fill=bg] (0, 0) rectangle (\progressbar@tmpdim, 2pt);
+      \end{tikzpicture}%
+    }%
+  \fi
 }
 \fi
 
