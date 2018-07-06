@@ -1,6 +1,6 @@
-% Author: Seongjin Lee 
-% Hanyang University, Seoul, Korea 
-% esos.hanyang.ac.kr 
+% Author: Seongjin Lee
+% Hanyang University, Seoul, Korea
+% esos.hanyang.ac.kr
 % 2016-09-20
 % note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
 % https://github.com/resourceful/lecture_sysprog/
@@ -23,18 +23,18 @@
 
 
 \title{System Programming}
-\subtitle{Week 13: Advanced I/O}
+\subtitle{Topic 09: Advanced I/O}
 \author[SJL]{Seongjin Lee}
 \institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
-\date{\today} 
+\date{\today}
 
 \begin{document}
 
 
 
-\frame[plain]{\titlepage} 
+\frame[plain]{\titlepage}
 
-\frame[t]{\frametitle{Table of contents}\tableofcontents} 
+\frame[t]{\frametitle{Table of contents}\tableofcontents}
 
 
 %---------------------------------------------------------
@@ -76,7 +76,7 @@ Two ways to specify nonblocking I/O for a given descriptor
 \begin{frame}[fragile,t,allowframebreaks]
   \frametitle{Nonblocking I/O Example: \texttt{codes/nonblocking.c}}
 
-\lstinputlisting[lineskip=0pt]{codes/nonblocking.c}  
+\lstinputlisting[lineskip=0pt]{codes/nonblocking.c}
 
 
 
@@ -120,9 +120,9 @@ nwrite = 1002, errno = 0
 \bigskip
 Finding the total sum of writes
 \begin{verbatim}
-grep "nwrite" stderr | 
+grep "nwrite" stderr |
     grep -v "\-1" |
-    awk  -F "," '{print $1}' | 
+    awk  -F "," '{print $1}' |
     awk -F "=" '{sum=sum+$2};END{print sum}'
 \end{verbatim}
 
@@ -130,7 +130,7 @@ grep "nwrite" stderr |
 
 Finding the total number of errors
 \begin{verbatim}
-grep "nwrite" stderr | 
+grep "nwrite" stderr |
     grep  "\-1" | wc -l
 \end{verbatim}
 
@@ -172,7 +172,7 @@ Early Berkeley releases supported only the \texttt{flock} function
 \item This function locks only entire files, not regions of a file.
 \end{itemize}
 
-Record locking was added to System V Release 3 through the \texttt{fcntl} function. 
+Record locking was added to System V Release 3 through the \texttt{fcntl} function.
 \begin{itemize}
 \item The \texttt{lockf} function was built on top of this, providing a
   simplified interface.
@@ -248,10 +248,10 @@ The basic rule
 \end{itemize}
 
 \bigskip
-Furthermore, if there are one or more read locks on a byte, there can’t be any write locks on that byte; 
+Furthermore, if there are one or more read locks on a byte, there can’t be any write locks on that byte;
 
 \bigskip
-if there is an exclusive write lock on a byte, there can’t be any read locks on that byte.  
+if there is an exclusive write lock on a byte, there can’t be any read locks on that byte.
 \end{frame}
 
 \begin{frame}[t]
@@ -261,11 +261,11 @@ if there is an exclusive write lock on a byte, there can’t be any read locks o
    \centering
     \includegraphics[width=0.7\linewidth]{figures/fig14_3-compatibility.png}
     \caption{Compatibility between different lock types}
-  \end{figure}  
+  \end{figure}
 
 \bigskip
 
-If a process has an existing lock on a range of a file, a subsequent attempt to place a lock on the same range by the same process \textbf{will replace the existing lock with the new one}. 
+If a process has an existing lock on a range of a file, a subsequent attempt to place a lock on the same range by the same process \textbf{will replace the existing lock with the new one}.
 \end{frame}
 
 
@@ -344,7 +344,7 @@ lock_reg(int fd, int cmd, int type, off_t offset, int whence, off_t len)
 
 \begin{frame}[t, fragile]
   \frametitle{Example: Requesting and Releasing a Lock}
-Use following five macros 
+Use following five macros
 \begin{codedef}
 #define	read_lock(fd, offset, whence, len) \
 	lock_reg((fd), F_SETLK, F_RDLCK, (offset), (whence), (len))
@@ -381,7 +381,7 @@ pid_t lock_test(int fd, int type, off_t offset, int whence, off_t len)
     if (lock.l_type == F_UNLCK)
        return(0);		/* false, region isn't locked by another proc */
        return(lock.l_pid);	/* true, return pid of lock owner */
-}  
+}
 \end{codedef}
 \end{frame}
 
@@ -408,8 +408,8 @@ macros
 \begin{frame}[t, fragile, allowframebreaks]
   \frametitle{Example: \texttt{codes/deadlock.c}}
 
-\lstinputlisting[lineskip=0pt]{codes/deadlock.c}  
-  
+\lstinputlisting[lineskip=0pt]{codes/deadlock.c}
+
 When a deadlock is detected, the kernel has to choose one process to receive the error return.
 
 \begin{verbatim}
@@ -422,9 +422,9 @@ child: writew_lock errorparent: got the lock, byte 0
 
 \begin{frame}[fragile,t]
   \frametitle{implied Inheritence and Release of Locks}
-Three rules govern the automatic inheritance and release of record locks  
+Three rules govern the automatic inheritance and release of record locks
 \begin{itemize}
-  \item Locks are associated with a process and a file. 
+  \item Locks are associated with a process and a file.
     \begin{itemize}
     \item when a process terminates, all its locks are released
     \item whenever a descriptor is closed, any locks on the file referenced by that descriptor for that process are released.
@@ -451,9 +451,9 @@ The same would happen if we replace \texttt{dup} with \texttt{open}
 fd1 = open(pathname, ...);
 read_lock(fd1, ...);
 // if pathname is same
-fd2 = open(pathname, ...); 
+fd2 = open(pathname, ...);
 close(fd2);
-\end{verbatim}    
+\end{verbatim}
   \end{column}
 \end{columns}
 }
@@ -462,7 +462,7 @@ close(fd2);
 
 \begin{frame}[t]
   \frametitle{implied Inheritence and Release of Locks cnt'd}
-Three rules govern the automatic inheritance and release of record locks  
+Three rules govern the automatic inheritance and release of record locks
 \begin{itemize}
   \item Locks are associated with a process and a file.
   \item Locks are never inherited by the child across a \texttt{fork}.
@@ -470,12 +470,12 @@ Three rules govern the automatic inheritance and release of record locks
     \item The child has to call \texttt{fcntl} to obtain its own locks on any
       descriptors that were inherited across the \texttt{fork}.
     \item locks are meant to prevent multiple
-      processes from writing to the same file at the same time. 
+      processes from writing to the same file at the same time.
     \end{itemize}
 
   \item Locks are inherited by a new program across an \texttt{exec}.
 \end{itemize}
-  
+
 \end{frame}
 
 \begin{frame}[fragile,t]
@@ -559,12 +559,12 @@ The unlock operation that follows has the effect of removing the locks for futur
     If all the functions in the library handle record locking in a consistent way, then we say that any set of processes using these functions to access a database are \textit{cooperating processes}.
   \end{block}
 
-It is feasible for these database access functions to use \textbf{advisory locking}, 
+It is feasible for these database access functions to use \textbf{advisory locking},
  if they are the only ones being used to access the database.
 \bigskip
 
 \textbf{Mandatory Locking} or \textit{enforcement-mode locking} causes the kernel to check \texttt{open}, \texttt{read}, \texttt{write} to verify that the calling process isn't violating a lock on the file being accessed
-  
+
 
 \end{frame}
 
@@ -587,7 +587,7 @@ The cost of using Asynchronous I/O
 \item The interfaces themselves involve a lot of extra setup and processing rules compared to their conventional counterparts
 \item Recovering from errors can be difficult.
 \end{itemize}
-  
+
 \end{frame}
 
 
@@ -627,7 +627,7 @@ struct sigevent {
 \texttt{sigev\_notify} field controls the type of notification
 \begin{enumerate}
 \item \texttt{SIGEV\_NONE}: The process is not notified when the asynchronous I/O request completes.
-\item \texttt{SIGEV\_SIGNAL}: The signal specified by the \texttt{sigev\_signo} field is generated when the asynchronous I/O request completes. 
+\item \texttt{SIGEV\_SIGNAL}: The signal specified by the \texttt{sigev\_signo} field is generated when the asynchronous I/O request completes.
 \item \texttt{SIGEV\_THREAD}: The function specified by the \texttt{sigev\_notify\_function} field is called when the asynchronous I/O request completes. The function is executed in a separate thread
 \end{enumerate}
 }
@@ -642,7 +642,7 @@ int aio_read(struct aiocb *aiocb); int aio_write(struct aiocb *aiocb);
 // Both return: 0 if OK, −1 on error
 \end{codedef}
 \bigskip
-When these functions return success, 
+When these functions return success,
 \begin{itemize}
 \item the asynchronous I/O request has been queued for processing by
   the operating system.
@@ -661,7 +661,7 @@ To force all pending asynchronous writes to persistent storage without waiting
 int aio_fsync(int op, struct aiocb *aiocb);
 // Returns: 0 if OK, −1 on error
 \end{codedef}
-The \texttt{aio\_fildes} field in the AIO control block indicates the file whose asynchronous writes are synched. 
+The \texttt{aio\_fildes} field in the AIO control block indicates the file whose asynchronous writes are synched.
 \bigskip
 If the \texttt{op} argument is set to
 \begin{itemize}
@@ -670,7 +670,7 @@ If the \texttt{op} argument is set to
 \item \texttt{O\_SYNC}: the operation behaves like a call to \texttt{fsync}.
 \end{itemize}
 
-Returns when the synch is scheduled. The data won’t be persistent until the asynchronous synch completes. 
+Returns when the synch is scheduled. The data won’t be persistent until the asynchronous synch completes.
 \end{frame}
 
 \begin{frame}[t, fragile]
@@ -711,7 +711,7 @@ ssize_t aio_return(const struct aiocb *aiocb);
 \begin{frame}[t, fragile]
   \frametitle{POSIX Asynchronous I/O: suspend}
 
-When we have completed the processing and find that we still have asynchronous operations outstanding, 
+When we have completed the processing and find that we still have asynchronous operations outstanding,
 we can call the \texttt{aio\_suspend} function to block until an operation completes.
 
 \begin{codedef}
@@ -751,7 +751,7 @@ Four return values
 \item \texttt{AIO\_ALLDONE}: All doen before attempt to cancel
 \item \texttt{AIO\_CANCELED}: All are canceled
 \item \texttt{AIO\_NOTCANCELED}: At least one of the requested opeartion could not be canceled
-\item \texttt{-1}: Failed. Error code stored in \texttt{errno} 
+\item \texttt{-1}: Failed. Error code stored in \texttt{errno}
 \end{itemize}
 
 \end{frame}
@@ -783,14 +783,14 @@ int lio_listio(int mode, struct aiocb *restrict const list[restrict],
 
 \begin{frame}[t, fragile, allowframebreaks]
   \frametitle{Example: \texttt{codes/rot13a.c}}
-  \lstinputlisting[lineskip=0pt]{codes/rot13a.c}  
+  \lstinputlisting[lineskip=0pt]{codes/rot13a.c}
 
 \end{frame}
 
 
 \begin{frame}[t, fragile, allowframebreaks]
   \frametitle{Example: \texttt{codes/rot13c2.c}}
-  \lstinputlisting[lineskip=-4pt, basicstyle=\footnotesize]{codes/rot13c2.c}  
+  \lstinputlisting[lineskip=-4pt, basicstyle=\footnotesize]{codes/rot13c2.c}
 
 \end{frame}
 
@@ -802,7 +802,7 @@ int lio_listio(int mode, struct aiocb *restrict const list[restrict],
 The \texttt{readv} and \texttt{writev} functions let us read into and write from multiple noncontiguous buffers in a single function call. These operations are called \textit{scatter read} and \textit{gather write}.
 \begin{codedef}
 #include <sys/uio.h>
-ssize_t readv(int fd, const struct iovec *iov, int iovcnt); 
+ssize_t readv(int fd, const struct iovec *iov, int iovcnt);
 ssize_t writev(int fd, const struct iovec *iov, int iovcnt);
 // Both return: number of bytes read or written, −1 on error
 \end{codedef}
@@ -827,7 +827,7 @@ The number of elements in the \texttt{iov} array is specified \texttt{iovcnt}
   \caption{the \texttt{iovec} structure for \texttt{readv} and \texttt{writev}}
 \end{figure}
 
-{\footnotesize 
+{\footnotesize
 \begin{itemize}
 \item The \texttt{writev} function gathers the output data from the buffers in order: \texttt{iov[0]}, \texttt{iov[1]}, through \texttt{iov[iovcnt−1]}
   \begin{itemize}
@@ -868,12 +868,12 @@ Generally, when we read from or write to a pipe, network device, or terminal, we
 
 \begin{frame}[t, fragile]
   \frametitle{\texttt{readn} and \texttt{writen} Functions}
-We can use the \texttt{readn} and \texttt{writen} functions to read and write \texttt{N} bytes of data, respectively, letting these functions handle a return value that’s possibly less than requested.  
+We can use the \texttt{readn} and \texttt{writen} functions to read and write \texttt{N} bytes of data, respectively, letting these functions handle a return value that’s possibly less than requested.
 \begin{itemize}
 \item These two functions simply call read or write as many times as required to read or write the entire N bytes of data.
 \end{itemize}
 \begin{codedef}
-ssize_t readn(int fd, void *buf, size_t nbytes); 
+ssize_t readn(int fd, void *buf, size_t nbytes);
 ssize_t writen(int fd, void *buf, size_t nbytes);
 // Both return: number of bytes read or written, −1 on error
 \end{codedef}
@@ -881,13 +881,13 @@ ssize_t writen(int fd, void *buf, size_t nbytes);
 
 \begin{frame}[t]
   \frametitle{\texttt{readn} Functions}
-  \lstinputlisting[lineskip=0pt]{codes/readn.c}  
+  \lstinputlisting[lineskip=0pt]{codes/readn.c}
 
 \end{frame}
 
 \begin{frame}[t]
   \frametitle{\texttt{writen} Functions}
-    \lstinputlisting[lineskip=0pt]{codes/writen.c}  
+    \lstinputlisting[lineskip=0pt]{codes/writen.c}
 
 \end{frame}
 
@@ -895,7 +895,7 @@ ssize_t writen(int fd, void *buf, size_t nbytes);
 \section{Memory-Mapped I/O}
 \begin{frame}[t, fragile]
   \frametitle{Memory-Mapped I/O}
-Memory-mapped I/O lets us map a file on disk into a buffer in memory so that, when we fetch bytes from the buffer, the corresponding bytes of the file are read.  
+Memory-mapped I/O lets us map a file on disk into a buffer in memory so that, when we fetch bytes from the buffer, the corresponding bytes of the file are read.
 \bigskip
 Similarly, when we store data in the buffer, the corresponding bytes are automatically written to the file. This lets us perform I/O without using \texttt{read} or \texttt{write}.
 
@@ -908,7 +908,7 @@ Similarly, when we store data in the buffer, the corresponding bytes are automat
 \begin{codedef}
 #include <sys/mman.h>
 void *mmap(void *addr, size_t len, int prot, int flag, int fd, off_t off );
-// Returns: starting address of mapped region if OK, MAP_FAILED on error  
+// Returns: starting address of mapped region if OK, MAP_FAILED on error
 \end{codedef}
 {\footnotesize
 \begin{itemize}
@@ -964,7 +964,7 @@ void *mmap(void *addr, size_t len, int prot, int flag, int fd, off_t off );
 
 \begin{frame}[t, fragile]
   \frametitle{Memory-Mapped I/O cnt'd}
- 
+
   \begin{itemize}
   \item A memory-mapped region is inherited by a child across a \texttt{fork}
   \item But, is not inherited by the new program across an \texttt{exec}.
@@ -983,7 +983,7 @@ int mprotect(void *addr, size_t len, int prot);
 
 \begin{frame}[t, fragile]
   \frametitle{Memory-Mapped I/O cnt'd}
-When we modify pages that we’ve mapped into our address space using the \texttt{MAP\_SHARED} flag, the changes aren’t written back to the file immediately. 
+When we modify pages that we’ve mapped into our address space using the \texttt{MAP\_SHARED} flag, the changes aren’t written back to the file immediately.
 \bigskip
 kernel daemons decide when dirty pages are written back based on
 \begin{itemize}
@@ -997,11 +997,11 @@ kernel daemons decide when dirty pages are written back based on
 
 \begin{frame}[t, fragile]
   \frametitle{Memory-Mapped I/O cnt'd}
-If the pages in a shared mapping have been modified, we can call \texttt{msync} to flush the changes to the file that backs the mapping. 
+If the pages in a shared mapping have been modified, we can call \texttt{msync} to flush the changes to the file that backs the mapping.
 \begin{codedef}
 #include <sys/mman.h>
 int msync(void *addr, size_t len, int flags);
-// Returns: 0 if OK, −1 on error  
+// Returns: 0 if OK, −1 on error
 \end{codedef}
 
 Two values for \texttt{flags}
@@ -1028,7 +1028,7 @@ int munmap(void *addr, size_t len);
 
 \begin{frame}[t, fragile, allowframebreaks]
   \frametitle{Example: CP with MMAP \texttt{codes/mcopy2.c}}
-      \lstinputlisting[lineskip=0pt, basicstyle=\footnotesize]{codes/mcopy2.c}  
+      \lstinputlisting[lineskip=0pt, basicstyle=\footnotesize]{codes/mcopy2.c}
 
 \texttt{dd if=/dev/urandom of=testfile count=1000000}
 
@@ -1046,7 +1046,7 @@ int munmap(void *addr, size_t len);
   \frametitle{Last Words}
 
 \begin{itemize}
-\item 
+\item
 \end{itemize}
 \end{frame}
 
