@@ -1,0 +1,12 @@
+--- foo.c	2016-09-30 17:04:42.000000000 +0900
++++ foobar.c	2016-09-30 17:05:03.000000000 +0900
+@@ -1,5 +1,6 @@
+-#include <stdio.h> 
++#include <stdio.h>
+ 
+-int main() {
++int main(int argc, char *argv[]) {
+ printf("Hello World\n");
+-}
++return 0;
++} 

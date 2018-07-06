@@ -1,0 +1,585 @@
+% Author: Seongjin Lee
+% Hanyang University, Seoul, Korea
+% esos.hanyang.ac.kr
+% 2016-09-11
+% note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
+% https://github.com/resourceful/lecture_sysprog/
+
+\documentclass[newPxFont,sthlmFooter,nooffset]{beamer}
+\usepackage{kotex}
+%\usetheme{sthlm}
+\usepackage{../beamer_template/beamerthemesthlm}
+\hypersetup{pdfauthor={Seongjin Lee (insight@gnu.ac.kr)},
+            pdfsubject={Lecture Note: System Programming},
+            pdfkeywords={Lecture Note, System Programming, class, (under)graduate},
+            pdfmoddate={D: \pdfdate},
+            pdfcreator={Seongjin Lee}}
+
+%\setbeamertemplate{footline}[text line]{%
+%    \parbox{\linewidth}{\vspace*{-8pt} \insertsectionhead  \hfill\insertshortauthor\hfill\insertpagenumber}}
+%\setbeamertemplate{navigation symbols}{}
+
+
+
+\title{System Programming}
+\subtitle{Week 3: File I/O}
+\author[SJL]{Seongjin Lee}
+\institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
+\date{\today}
+
+\begin{document}
+
+
+
+\frame[plain]{\titlepage}
+
+\frame{\frametitle{Table of contents}\tableofcontents}
+
+
+%---------------------------------------------------------
+\section{File I/Os}
+
+\begin{frame}[t]{File Descriptors}
+\begin{enumerate}[ ]
+\item <1-> A {\em file descriptor} (or {\em file handle}) is a small, non-negative integer which identifies a file to the kernel.
+\item <2-> Traditionally, \texttt{stdin}, \texttt{stdout} and \texttt{stderr} are 0, 1 and 2 respectively.
+\item <3-> \hfill\includegraphics[width=0.7\linewidth]{./figure/stream-pipe.png}\hfill~
+\item <4-> Relying on ``magic numbers'' is BAD.  Use \texttt{STDIN\_FILENO}, \texttt{STDOUT\_FILENO} and \texttt{STDERR\_FILENO} defined in <unistd.h> or \texttt{stdin}, \texttt{stdout}, and \texttt{stderr} defined in <stdio.h>.
+
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}[t]{How many files can you open? (./codes/fdcount.c)}
+\lstinputlisting[firstline=17,lineskip=-5pt]{./codes/fdcount.c}
+
+How to compile \\
+\texttt{\$ cd codes; cc -Wall -g -o fdcount fdcount.c}
+
+\end{frame}
+
+
+\subsection{Standard I/Os}
+\begin{frame}[t]{Basic File I/Os}
+There are five fundamental \textsc{Unix} file I/O related functions:
+\begin{itemize}
+	\item \texttt{open(2)}
+	\item \texttt{close(2)}
+	\item \texttt{lseek(2)}
+	\item \texttt{read(2)}
+	\item \texttt{write(2)}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[containsverbatim,t]{open(2)}
+
+\begin{codedef}
+#include <fcntl.h>
+int open(const char *path, int oflag, ... /* mode_t mode */ );
+int openat(int fd, const char *path, int oflag, ... /* mode_t mode */ );
+\end{codedef}
+Both return: file descriptor if OK, −1 on error
+\bigskip
+
+The \textit{path} parameter is the name of the file to open or create.
+\bigskip
+
+Options are specified by the \textit{oflag}
+\end{frame}
+
+\begin{frame}[t]{Options are}
+\begin{columns}[t]
+\begin{column}{0.30\linewidth}
+\small \textit{oflag} must be one (and only one) of:
+\footnotesize
+\begin{itemize}
+	\item \texttt{O\_RDONLY}\\ -- Open for reading only
+	\item \texttt{O\_WRONLY}\\ -- Open for writing only
+	\item \texttt{O\_RDWR}\\ -- Open for reading and writing
+\end{itemize}
+\end{column}
+\begin{column}{0.70\linewidth}
+\small and may be OR'd with any of these:
+\footnotesize
+\begin{itemize}
+	\item \texttt{O\_APPEND} -- Append to end of file for each write
+	\item \texttt{O\_CREAT} -- Create the file if it doesn't exist. Requires
+		{\em mode} argument
+	\item \texttt{O\_EXCL} -- Generate error if \texttt{O\_CREAT} and file
+		already exists. (atomic)
+	\item \texttt{O\_TRUNC} -- If file exists and successfully open in
+		\texttt{O\_WRONLY} or \texttt{O\_RDWR}, make length = 0
+	\item \texttt{O\_NOCTTY} -- If pathname refers to a terminal device, do
+		not allocate the device as a controlling terminal
+	\item \texttt{O\_NONBLOCK} -- If pathname refers to a FIFO, block special,
+		or char special, set nonblocking mode (open and I/O)
+	\item \texttt{O\_SYNC} --  Each write waits for physical I/O to complete
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}[t]{openat(2)}
+\texttt{openat(2)} function is equivalent to the open() function except in the case where the path specifies a relative path in an atomic fashion
+\bigskip
+
+
+\begin{itemize}
+	\item \texttt{O\_EXEC} -- Open for execute only
+	\item \texttt{O\_SEARCH} -- Open for search only (applies to directories)
+	\item \texttt{O\_DIRECTORY} -- If path resolves to a non-directory file, fail and set errno to \texttt{ENOTDIR}.
+	\item \texttt{O\_DSYNC} -- Wait for physical I/O for data, except
+file attributes
+	\item \texttt{O\_RSYNC} -- Block read operations on any pending writes.
+	\item \texttt{O\_PATH} -- Obtain a file descriptor purely for fd-level operations. (Linux $>$2.6.36 only)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{close(2)}
+
+\begin{codedef}
+#include <unistd.h>
+int close(int fd);   // Returns: 0 if OK, −1 on error
+\end{codedef}
+
+Closing a file releases any record locks that the process may have on the file.
+
+
+When a process terminates, all of its open files are closed automatically by the kernel.
+\bigskip
+
+Many programs take advantage of this fact and don’t explicitly close open files.
+\bigskip
+
+
+
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{lseek example}
+
+\texttt{cd ./codes ; make hole}
+
+\begin{codedef}
+James@maker:codes> make hole
+cc -g -Wall -O0 -c hole.c
+cc -g -Wall -O0 -o hole hole.o
+James@maker:codes> ./hole
+James@maker:codes> ls -l file.hole
+-rw-------  1 James  staff  16394 Sep 15 23:46 file.hole
+James@maker:codes> od -c file.hole
+0000000     a    b    c    d    e    f    g    h    i    j  \0  \0  \0  \0  \0  \0
+0000020   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+*
+0040000    A   B   C   D   E   F   G   H   I   J
+0040012
+James@maker:codes>
+\end{codedef}
+
+\bigskip
+Try making a file without a hole and compare the size of the two files.
+
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{creat(2)}
+
+\begin{codedef}
+#include <fcntl.h>
+int creat(const char *path, mode_t mode);  \\ Returns: file descriptor opened for write-only if OK, −1 on error
+\end{codedef}
+\bigskip
+
+it is equivalent to \texttt{open(path, O\_WRONLY | O\_CREAT | O\_TRUNC, mode);}
+\bigskip
+
+One deficiency with creat is that the file is opened only for writing.
+\bigskip
+
+If we were creating a temporary file that we wanted to write and then read back, we had to call creat, close, and then open. A better way is to use the open function, as in
+\texttt{open(path, O\_RDWR | O\_CREAT | O\_TRUNC, mode);}
+
+\end{frame}
+
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{lseek(2)}
+\begin{codedef}
+#include <unistd.h>
+off_t lseek(int fd, off_t offset, int whence);  \\ Returns: new file offset if OK, −1 on error
+\end{codedef}
+By default, this offset is initialized to 0 when a file is opened, unless the \texttt{O\_APPEND} option is specified.
+\bigskip
+
+The interpretation of the offset depends on the value of the whence argument.
+\begin{itemize}
+\item \texttt{SEEK\_SET} the file’s offset is set to offset bytes from the beginning of the file.
+\item \texttt{SEEK\_CUR} the file’s offset is set to its current value plus the offset. The offset can be positive or negative.
+\item \texttt{SEEK\_END} the  file’s offset is set to the size of the file plus the offset. The offset can be positive or negative.
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{read(2)}
+\begin{codedef}
+#include <unistd.h>
+ssize_t read(int fd, void *buf, size_t nbytes); \\ Returns: number of bytes read, 0 if end of file, −1 on error
+\end{codedef}
+
+There are several cases where \texttt{read} returns less than the number of bytes requested:
+\begin{itemize}
+\item \textbf{regular file:} EOF is reached before the requested number of bytes has been read.
+\item \textbf{terminal device:} Normally, up to one line is read at a time.
+\item \textbf{network: } Buffering within the network may cause less than the requested amount to be returned.
+\item \textbf{a pipe or FIFO:} If the pipe contains fewer bytes than requested, read will return only what is available.
+\item \textbf{interrupted by a signal} and a partial amount of data has already been read.
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{write(2)}
+\begin{codedef}
+#include <unistd.h>
+ssize_t write(int fd, const void *buf, size_t nbytes); \\ Returns: number of bytes written if OK, −1 on error
+\end{codedef}
+
+The return value is usually equal to the nbytes argument; otherwise, an error has occurred.
+\begin{itemize}
+  \item A common cause for a write error is either filling up a disk or exceeding the file size limit for a given process.
+\end{itemize}
+\bigskip
+
+For a regular file, \texttt{write} starts at the file’s current offset.
+\bigskip
+
+If the \texttt{O\_APPEND} option was specified when the file was opened, the file’s offset is set to the current end of file before each write operation.
+\bigskip
+
+After a successful write, the file’s offset is incremented by the number of bytes actually written.
+\end{frame}
+
+\subsection{I/O Efficiency}
+\begin{frame}[containsverbatim,t]
+  \frametitle{I/O Efficiency}
+\lstinputlisting[lineskip=-5pt]{./codes/mycat.c}
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{I/O Efficiency cnt'd}
+\begin{itemize}
+\item  It reads from standard input and writes to standard output, assuming that these have been set up by the shell before this program is executed. Indeed, all normal UNIX system shells provide a way to open a file for reading on standard input and to create (or rewrite) a file on standard output. This prevents the program from having to open the input and output files, and allows the user to take advantage of the shell’s I/O redirection facilities.
+\item The program doesn’t close the input file or output file. Instead, the program uses the feature of the UNIX kernel that closes all open file descriptors in a process when that process terminates.
+\item This example works for both text files and binary files, since there is no difference between the two to the UNIX kernel.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{I/O Efficiency cnt'd}
+\texttt{cd codes; make iotest}
+\bigskip
+
+\lstinputlisting[linerange={17,30},lineskip=-5pt]{./codes/Makefile}
+\end{frame}
+
+
+\begin{frame}[t]
+  \frametitle{I/O Efficiency cnt'd}
+\centering
+\includegraphics[width=0.85\linewidth]{./figure/iotest.png}
+\end{frame}
+
+\begin{frame}[t]
+  \frametitle{I/O Efficiency cnt'd}
+\centering
+\includegraphics[width=0.85\linewidth]{./figure/iotest2.png}
+\end{frame}
+
+
+\section{File Sharing}
+\subsection{The Background}
+
+\begin{frame}[t]{File Sharing}
+The UNIX System supports the sharing of open files among different processes.
+
+\bigskip
+The kernel uses three data structures to represent an open file, and the relationships among them determine the effect one process has on another with regard to file sharing.
+
+\bigskip
+\begin{enumerate}
+\item Process table
+\item File table
+\item v-node structure
+\end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Bit about the Data Structures}
+\begin{enumerate}
+\item Each process has an entry (which is a table of file descriptor) in the process table.
+  \begin{itemize}
+  \item The file descriptor flags (Fig. 3.7 in the text)
+  \item A pointer to a file table entry
+  \end{itemize}
+\item The kernel maintains a file table for all open files, which consists of
+  \begin{itemize}
+  \item file status flags (\texttt{O\_APPEND, O\_SYNC, O\_RDONLY}, etc)
+  \item current file offset
+  \item pointer to a v-node table entry for the file
+  \end{itemize}
+\item Each open file has a v-node structure that contains the type of file and pointers to functions that operate on the file
+  \begin{itemize}
+  \item vnode information
+  \item inode information (such as current file size)
+  \end{itemize}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Arrangement of the Tables}
+\centering
+\includegraphicscopyright[width=0.85\linewidth]{./figure/fig3-7_kernel_DS_open_files.png}{Kernel data structures for open files (Fig. 3.7)}
+
+\end{frame}
+
+
+\begin{frame}[t]
+  \frametitle{on v-node}
+\begin{itemize}
+\item The v-node was invented to provide support for multiple file system types on a computer.
+\item Linux uses a file system-independent i-node and file system-dependent i-node.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example of File Open}
+\centering
+\includegraphicscopyright[width=0.85\linewidth]{./figure/fig3-8_two_processes_open_file.png}{Two independent processes with the same file open (Stevens Fig. 3.8)}
+\begin{textblock*}{60mm}(65mm,0.15\textheight)
+{\footnotesize Each process that opens the file gets its own file table entry, but only a v-node for a file because each process has its own current offset for the file }
+\end{textblock*}
+\end{frame}
+
+\begin{frame}[t]
+  \frametitle{File Sharing}
+What happens with the operations that we've described earlier.
+\begin{itemize}
+\item After each \texttt{write} completes, the current file offset in the file table entry is incremented by the number of bytes written (if \texttt{current\_file\_offset} > \texttt{current\_file\_size} then \texttt{current\_file\_size} $\leftarrow$ \texttt{current\_file\_offset} in i-node table entry)
+\item If a file is opened with \texttt{O\_APPEND}, each \texttt{write} sets the \texttt{current\_file\_offset} = \texttt{current\_file\_size}
+\item \texttt{lseek} adjusts \texttt{current\_file\_offset} in file table entry
+\item \texttt{lseek} modifies \texttt{current\_file\_offset} int the file table entry. NO I/O.
+\end{itemize}
+\end{frame}
+
+\subsection{Atomic Operations}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{Appending to a  File: Older version}
+
+\textsc{Unix} that didn't support the \texttt{O\_APPEND} option to open used following code to append
+
+\begin{lstlisting}
+if (lseek(fd, 0L, 2) < 0){         /* position to EOF, 2: SEEK_END*/
+    fprintf(stderr, "lseek error");
+    exit(1);
+}
+
+if (write(fd, buf, 100) != 100){   /* and write */
+    fprintf(stderr, "write error");
+    exit(1);
+}
+
+\end{lstlisting}
+\bigskip
+It worked for single process
+
+\bigskip
+Read p.78 for more info
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{Atomic Append to a  File: pread(2) and pwrite(2)}
+
+Two functions that allow applications to seek and perform I/O atomically: \texttt{pread} and \texttt{pwrite}
+\begin{itemize}
+\item \texttt{pread}: \texttt{lseek} + \texttt{read}
+\item \texttt{prwite}: \texttt{lseek} + \texttt{write}
+\item Exceptions are
+  \begin{itemize}
+  \item There is no way to interrupt the two operations
+  \item The crruent file offset is not updated
+  \end{itemize}
+\end{itemize}
+
+\begin{codedef}
+#include <unistd.h>
+ssize_t pread(int fd, void *buf, size_t nbytes, off_t offset);
+// Returns: number of bytes read, 0 if end of file, −1 on error
+
+ssize_t pwrite(int fd, const void *buf, size_t nbytes, off_t offset);
+// Returns: number of bytes written if OK, −1 on error
+\end{codedef}
+\end{frame}
+
+
+\subsection{Descriptors}
+\begin{frame}[containsverbatim,t]
+  \frametitle{dup and dup2 Functions}
+
+An existing file descriptor is duplicated by following functions
+\begin{itemize}
+\item \texttt{dup} : duplicate existing file descriptor
+\item \texttt{dup2} : duplicate to a particular file descriptor value
+\item \texttt{dup} returns the lowest number unused file descriptor
+\end{itemize}
+\begin{codedef}
+#include <unistd.h>
+int dup(int fd); // fd : old-descriptor
+int dup2(int fd, int fd2); // fd2 : new descriptor
+
+// Both return: new file descriptor if OK, −1 on error
+\end{codedef}
+
+\bigskip
+The returned new file descriptor as the value of the functions shares the same file table entry as the fd argument
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{dup and dup2 Functions}
+  \includegraphicscopyright[width=0.98\linewidth]{./figure/fig-3-9_dup.png}{Fig 3.9 Kernel data structures after dup}
+\end{frame}
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{sync, fsync, and fdatasync Functions}
+There is a page cache in the kernel through which most disk I/O passes.
+\begin{itemize}
+\item When writing a data to a file, it is copied to the buffer and queued for writing to disk at some later time
+\item data in buffer are written to the disk explicitly using following functions
+\end{itemize}
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{sync, fsync, and fdatasync Functions}
+\begin{codedef}
+#include <unistd.h>
+int fsync(int fd);
+int fdatasync(int fd);
+// Returns: 0 if OK, −1 on error
+void sync(void);
+\end{codedef}
+
+\begin{itemize}
+\item \texttt{sync} queues all the modified block buffers for writing and returns.
+  \begin{itemize}
+  \item it does not wait for the disk writes to take place
+  \item it is called periodically (30 seconds) from a system daemon
+  \end{itemize}
+\item \texttt{fsync} refers only to a file, specified by the file descriptor \texttt{fd}
+\item \texttt{fdatasync} is similar to \texttt{fsync}, but affects only the data portions of a file
+\end{itemize}
+
+\end{frame}
+
+\subsection{Manipulating Open Flags}
+\begin{frame}[containsverbatim,t]
+  \frametitle{fcntl Function}
+\texttt{fcntl} function can change the properties of a file that is already open
+
+\begin{codedef}
+#include <fcntl.h>
+int fcntl(int fd, int cmd, ... /* int arg */ );
+// Returns: depends on cmd if OK (see following), −1 on error
+\end{codedef}
+
+The purposes
+\begin{enumerate}
+\item  Duplicate an existing descriptor (\textit{cmd} = \texttt{F\_DUPFD} or \texttt{F\_DUPFD\_CLOEXEC})
+\item Get/set file descriptor flags (\textit{cmd} = \texttt{F\_GETFD} or \texttt{F\_SETFD})
+\item Get/set file status flags (\textit{cmd} = \texttt{F\_GETFL} or \texttt{F\_SETFL})
+\item Get/set asynchronous I/O ownership (\textit{cmd} = \texttt{F\_GETOWN} or \texttt{F\_SETOWN})
+\item Get/set record locks (\textit{cmd} = \texttt{F\_GETLK}, \texttt{F\_SETLK}, or \texttt{F\_SETLKW})
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{fcntl example}
+
+\texttt{cd codes; make setfl} or \texttt{make ftest}
+\lstinputlisting[linerange={65-68,71-71,74-83},lineskip=-5pt]{./codes/setfl.c}
+
+Use the Makefile and check the performance shown in Fig 3.14
+\lstinputlisting[linerange={30-36},lineskip=-5pt]{./codes/Makefile}
+
+\end{frame}
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{ioctl Function}
+The catchall for I/O operations.
+
+\begin{codedef}
+#include <unistd.h>     /* System V */
+#include <sys/ioctl.h>  /* BSD, OSX, and Linux */
+int ioctl(int fd, int request, ...);
+// Returns: −1 on error, something else if OK
+\end{codedef}
+\bigskip
+
+It is designed to handle devices, such as terminal I/O, mag tape, etc, that can't be specified by previous calls.
+\end{frame}
+
+
+\begin{frame}[containsverbatim,t]
+  \frametitle{/dev/fd}
+Newer systems provide a directory named \texttt{/dev/fd} whose entries are files named 0, 1, 2, and so on.
+
+Opening the file \texttt{/dev/fd/}\textit{n} is equivalent to duplicating descriptor \textit{n}, assuming that descriptor \textit{n} is open
+\bigskip
+
+\begin{codedef}
+> ls -l /dev/sdtin /dev/stdout /dev/stderr
+
+> ls -l /dev/fd/
+
+> echo first > file1
+> echo third > file2
+> echo second | paste file1 /dev/fd/0 file2
+\end{codedef}
+
+\end{frame}
+
+
+\section{Last Words}
+\begin{frame}[containsverbatim,t]
+  \frametitle{Homework}
+  \begin{itemize}
+  \item Reading
+    \begin{enumerate}[ ]
+    \item
+      \begin{sthlmLatex}
+man { open | creat | lseek | read | pread | write | pwrite | close | dup | dup2 | fcntl | sync | fsync | fdatasync | ioctl }
+      \end{sthlmLatex}
+
+    \item Chapter 4
+    \end{enumerate}
+  \item Solve
+    \begin{itemize}
+    \item Question 3.4 and 3.5
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\end{document}

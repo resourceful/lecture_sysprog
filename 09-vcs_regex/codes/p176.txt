@@ -1,0 +1,29 @@
+Name	BrainWeight	BodyWeight
+Mountain beaver	8.1	1.35
+Cow	423	465
+Graywolf	119.5	36.33
+Goat	115	27.66
+Guineapig	5.5	1.04
+Diplodocus	50	11700
+Asian elephant	4603	2547
+Donkey	419	187.1
+Horse	655	521
+Potar monkey	115	10
+Cat	25.6	3.3
+Giraffe	680	529
+Gorilla	406	207
+Human	1320	62
+African elephant	5712	6654
+Triceratops	70	9400
+Rhesus monkey	179	6.8
+Kangaroo	56	35
+Hamster	1	0.12
+Mouse	0.4	0.023
+Rabbit	12.1	2.5
+Sheep	175	55.5
+Jaguar	157	100
+Chimpanzee	440	52.16
+Brachiosaurus	154.5	87000
+Rat	1.9	0.28
+Mole	3	0.122
+Pig	180	192
