@@ -37,6 +37,35 @@
 
 
 %---------------------------------------------------------
+\section{UNIX File Types}
+
+\begin{frame}[t]{File Types}
+\begin{enumerate}[ ]
+\item <1-> \textbf{Regular file}
+\begin{itemize}
+	\item File containing user/app data (binary, text, whatever)
+	\item OS does not know anything about the format (other than sequence of bytes, akin to main memory)
+\end{itemize}
+\item <2-> \textbf{Directory file}
+\begin{itemize}
+	\item A file that contains the names and locations of other files
+\end{itemize}
+\item <3-> \textbf{Character special and block special files}
+\begin{itemize}
+	\item Terminals (character special) and disks ( block special)
+\end{itemize}
+\item <4-> \textbf{FIFO (named pipe)}
+\begin{itemize}
+	\item A file type used for inter-process communication
+\end{itemize}
+\item <5-> \textbf{Socket}
+\begin{itemize}
+	\item A file type used for network communication between processes
+\end{itemize}
+\end{enumerate}
+\end{frame}
+
+
 \section{File I/Os}
 
 \begin{frame}[t]{File Descriptors}
