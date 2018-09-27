@@ -1,4 +1,0 @@
-\beamer@endinputifotherversion {3.36pt}
-\beamer@sectionintoc {1}{What is UNIX?}{3}{0}{1}
-\beamer@sectionintoc {2}{UNIX Standardization}{5}{0}{2}
-\beamer@sectionintoc {3}{UNIX Implementation}{9}{0}{3}
