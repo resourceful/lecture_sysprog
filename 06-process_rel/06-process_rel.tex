@@ -2,6 +2,9 @@
 % Hanyang University, Seoul, Korea
 % esos.hanyang.ac.kr
 % 2016-09-20
+% Update: Muhammad Faris Fathoni
+% Gyeongsang National University
+% 2018-10-11
 % note: some slides are adopted from  \url{www.cs.stevens.edu/~jschauma/631A/}
 % https://github.com/resourceful/lecture_sysprog/
 
@@ -24,7 +27,7 @@
 
 \title{System Programming}
 \subtitle{Topic 6: Process Relationships}
-\author[SJL]{Seongjin Lee}
+\author[SJL]{Seongjin Lee\\Updated by: Muhammad Faris Fathoni}
 \institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
 \date{\today}
 
@@ -43,7 +46,7 @@
 
 \begin{frame}[t]
   \frametitle{introduction}
-This chapter covers following items
+Overview
   \begin{itemize}
   \item Terminal Logins
   \item Sessions
@@ -58,11 +61,10 @@ This chapter covers following items
 \section{Terminal Logins}
 
 \begin{frame}[t]
-  \frametitle{Terminal}
+  \frametitle{BSD Terminal}
   \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\linewidth]{figure/quote-a-computer-terminal-is-not-some-clunky-old-television-with-a-typewriter-in-front-of-it-it-is-an-douglas-adams-296711.jpg}
-    \caption{Douglas Noel Adams was an English author, scriptwriter, essayist, humorist, satirist and dramatist, best known as the author of The Hitchhiker's Guide to the Galaxy'' 1978}
+    \includegraphics[width=0.8\linewidth]{figure/FreeBSDPict.png}
   \end{figure}
 \end{frame}
 
@@ -82,6 +84,10 @@ James    console  Oct 12 15:36
 James    ttys000  Oct 13 22:02
 James    ttys001  Oct 13 22:08
 \end{verbatim}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\linewidth]{figure/GambarWho.png}
+\end{figure}
 \end{itemize}
 \end{frame}
 
@@ -192,6 +198,21 @@ Each line specifies the name of the device and other parameters that are passed 
   \end{table}
 \end{frame}
 
+\begin{frame}[t]
+     \frametitle{BSD Terminal Login Process}
+     \begin{figure}[h]
+       \centering
+       \includegraphics[width=0.5\linewidth]{figure/[5]LoginProc.png}
+     \end{figure}
+   \end{frame}
+
+\begin{frame}[t]
+  \frametitle{BSD Terminal}
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figure/[4]BSD.png}
+  \end{figure}
+\end{frame}
 
 
 
@@ -211,6 +232,7 @@ Each process belongs to a process group
 \begin{codedef}
 #include <unistd.h>
 pid_t getpgrp(void);
+pid_t getpgid(pid_t pid); 
 // Returns: process group ID of calling process
 \end{codedef}
 
@@ -225,9 +247,10 @@ int setpgid(pid_t pid, pid_t pgid);
 // Returns: 0 if OK, −1 on error
 \end{codedef}
 
+Each process group can have a process group leader
 \begin{itemize}
-\item sets the process group ID to \textit{pgid} in the process whose process ID equals to pid
-\item if \texttt{pgid} == \texttt{pid}, then \texttt{pid} == process group leader
+\item Process group leader identified by its \texttt{pgid} (if \texttt {pgid} == \texttt{pid})
+\item Leader can create a new process group, create processes in the group
 \item if \texttt{pid} == 0, caller process ID is used
 \item if \texttt{pgid} == 0, group ID == \texttt{pid}
 \item A porcess can set the process group ID of itself or its children
@@ -351,11 +374,12 @@ if \texttt{pid} == 0, it returns the \texttt{pgid} of calling process's session 
 \begin{frame}[fragile]
   \frametitle{Job Control}
 
-We can start a job in either the forground or the background
+We can start a job in either the foreground or the background
 
+Examples:
 \begin{description}
-\item[foreground] \texttt{vi main.c} starts a job in the foreground
-\item[background] \texttt{make all \&} start a job in the background
+\item[foreground] \texttt{vi main.c} --> starts a job in the foreground
+\item[background] \texttt{make all} --> start a job in the background
 \end{description}
 
 \begin{verbatim}
@@ -374,11 +398,14 @@ $              just press RETURN
   \frametitle{Job Control cont'd}
 The foreground jobs are affected by some special characters, which generate signals
 \begin{itemize}
-\item Interrupt character (typically DELETE or Control-C) generates SIGINT
-\item Quit character (typically Control-bashslash) generates SIGQUIT
-\item Suspend character (typically Control-Z) generatea SIGTSTP
+\item Interrupt character (typically Ctrl + C) generates SIGINT
+\item Quit character (typically Ctrl + backslash) generates SIGQUIT
+\item Suspend character (typically Ctrl + Z) generates SIGTSTP
+\item Pause character (typically Ctrl + S) generates SIGSTOP
+\item Resume character (typically Ctrl + Q) generates SIGCONT
 \end{itemize}
 \end{frame}
+
 
 
 \begin{frame}[fragile,t]
