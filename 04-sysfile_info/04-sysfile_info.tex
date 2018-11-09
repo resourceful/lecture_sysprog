@@ -13,7 +13,8 @@
             pdfsubject={Lecture Note: System Programming},
             pdfkeywords={Lecture Note, System Programming, class, (under)graduate},
             pdfmoddate={D: \pdfdate},
-            pdfcreator={Seongjin Lee}}
+            pdfcreator={Seongjin Lee}
+            pdfpresentor={Gyuri Chang}}
 
 %\setbeamertemplate{footline}[text line]{%
 %    \parbox{\linewidth}{\vspace*{-8pt} \insertsectionhead  \hfill\insertshortauthor\hfill\insertpagenumber}}
@@ -25,7 +26,7 @@
 \title{System Programming}
 \subtitle{Topic 4: System Data Files and Process Environment}
 \author[SJL]{Seongjin Lee}
-\institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University}
+\institute{\href{mailto:insight@gnu.ac.kr}{insight@gnu.ac.kr}\\\url{http://open.gnu.ac.kr}\\Systems Research Lab.\\Gyeongsang National University\\Presentor: Gyuri Chang}
 \date{\today}
 
 \begin{document}
@@ -46,7 +47,7 @@
 A \textsc{Unix} system requires numerous data files for normal operations
 \begin{itemize}
 \item \texttt{/etc/passwd} - for user log-in or \texttt{ls -l}, etc
-\item \texttt{/etc/group}
+\item \texttt{/etc/group} - for group information
 \end{itemize}
 
 These data files have been ASCII text files and were read with the standard I/O libaray.
@@ -121,32 +122,6 @@ They are only for looking up either a login name or a user ID
 \end{frame}
 
 
-
-\begin{frame}[containsverbatim,t]
-  \frametitle{Password File API cnt'd}
-
-\begin{codedef}
-#include <pwd.h>
-struct passwd *getpwent(void);
-// Returns: pointer if OK, NULL on error or end of file
-void setpwent(void);
-void endpwent(void);
-\end{codedef}
-
-\texttt{getpwent} to return the next entry in the password file.
-
-The function \texttt{setpwent} rewinds whatever files it uses, and \texttt{endpwent} closes these files.
-
- When using \texttt{getpwent}, we must always be sure to close these files by calling \texttt{endpwent} when we’re through.
-\end{frame}
-
-
-\begin{frame}[containsverbatim,t]
-  \frametitle{getpwnam implementation}
-\lstinputlisting[lineskip=0em]{codes/getpwnam.c}
-
-more interested reader can go on and have a look at \texttt{getspnam} and \texttt{setspent} for shadow password files
-\end{frame}
 
 
 \subsection{Group files}
@@ -338,15 +313,6 @@ The strftime and \texttt{strftime\_l} functions are the same, except that the \t
 
 
 
-\begin{frame}[t]
-  \frametitle{Relationship of Time Functions}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[height=0.8\textheight]{figure/fig6-9_relationship.png}
-  \caption{Relationship of the various time functions}
-\end{figure}
-\end{frame}
 
 
 
@@ -370,30 +336,12 @@ struct tm {         /* a broken-down time */
 
 \end{frame}
 
-\begin{frame}[containsverbatim,t]
-  \frametitle{strftime example}
-\texttt{make strftime; ./strftime}
-
-\lstinputlisting[linerange={8,23},lineskip=0em]{codes/strftime.c}
-
-\end{frame}
-
 
 
 
 
 \subsection{Last Words}
-\begin{frame}[t]
-  \frametitle{Homework}
 
-  \begin{itemize}
-  \item Download Mobibench code from \href{https://github.com/ESOS-Lab/Mobibench/tree/master/shell}{https://github.com/ESOS-Lab/Mobibench/tree/master/shell}
-  \item Measured time is stored in timeval which is in microseconds.
-  \item Change the code to measure the performance in nanoseconds.
-  \item use \texttt{diff} to create \texttt{patch} file and show your work.
-  \item print out the \texttt{patch} file and handed in on the first class of 2016-10-12
-  \end{itemize}
-\end{frame}
 
 
 \begin{frame}[containsverbatim,t]
@@ -530,31 +478,6 @@ The exit status of the process is undefined, if
 
 
 \begin{frame}[containsverbatim,t]
-  \frametitle{exit(3) function example}
-\bigskip
-  \begin{columns}
-    \begin{column}{0.45\linewidth}
-      The classic ``hello, world'' example
-      \lstinputlisting[linerange={13,18},lineskip=-5pt]{codes/hello.c}
-    \end{column}
-    \begin{column}{0.5\linewidth}
-\begin{verbatim}
-$ make hello
-$ ./hello
-hello, world
-^C
-$ echo $?
-130
-\end{verbatim}
-\texttt{\$?} prints exit status of previous process
-
-      more on exit status
-      \url{http://tldp.org/LDP/abs/html/exitcodes.html}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}[containsverbatim,t]
   \frametitle{atexit(3) function}
 With ISO C, a process can register at least 32 functions that are automatically called by
 \texttt{exit}. These are called \textit{exit handlers} and are registered by calling the \texttt{atexit} function.
@@ -568,16 +491,6 @@ int atexit(void (*func)(void));
 
 \end{frame}
 
-
-\begin{frame}[t]
-  \frametitle{How Process are Created and Terminated}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[height=0.85\textheight]{figure/fig7-2_how_prog.png}
-  \caption{How a C program is started and how it terminates}
-\end{figure}
-\end{frame}
 
 
 
